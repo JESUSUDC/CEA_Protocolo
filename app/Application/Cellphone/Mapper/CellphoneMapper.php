@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Application\Cellphone\Mapper;
 
 use App\Domain\Cellphone\Entity\Cellphone;
-use App\Application\Cellphone\Response\CellphoneResponse;
+use App\Application\Cellphone\Dto\Response\CellphoneResponse;
 
 final class CellphoneMapper
 {

@@ -63,13 +63,8 @@ final class CellphoneController extends Controller
             $query = new ListCellphonesQuery($limit, $offset);
             $listResp = $this->listUseCase->execute($query);
 
-            // DEBUG: inspecciona qué llega del UseCase
-            dd($listResp);
+            return response()->json($listResp, 200);
 
-            return response()->json(
-                $this->mapper->toHttpList($listResp->items, $listResp->total),
-                200
-            );
         } catch (\Throwable $e) {
             return ApiExceptionHandler::handle($e);
         }

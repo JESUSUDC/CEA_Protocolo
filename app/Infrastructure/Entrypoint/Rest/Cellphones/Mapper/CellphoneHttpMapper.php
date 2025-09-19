@@ -7,7 +7,8 @@ use App\Domain\Cellphone\Entity\Cellphone;
 use Illuminate\Http\Request;
 use App\Application\Cellphone\Dto\Command\CreateCellphoneCommand;
 use App\Application\Cellphone\Dto\Command\UpdateCellphoneCommand;
-use App\Application\Cellphone\Response\CellphoneResponse;
+use App\Application\Cellphone\Dto\Response\CellphoneResponse as DtoCellphoneResponse;
+use App\Application\Cellphone\Dto\Response\CellphoneListResponse as DtoCellphoneListResponse;
 
 final class CellphoneHttpMapper
 {
@@ -38,31 +39,77 @@ final class CellphoneHttpMapper
         );
     }
 
-    public function toHttp(CellphoneResponse $c): array
+    /**
+     * Convierte un CellphoneResponse (DTO), array u objeto a array HTTP-friendly.
+     *
+     * @param mixed $c
+     * @return array<string,mixed>
+     */
+    public function toHttp(mixed $c): array
     {
-        return [
-            'id' => $c->id,
-            'brand' => $c->brand,
-            'imei' => $c->imei,
-            'screen_size' => $c->screenSize,
-            'megapixels' => $c->megapixels,
-            'ram_mb' => $c->ramMb,
-            'storage_primary_mb' => $c->storagePrimaryMb,
-            'storage_secondary_mb' => $c->storageSecondaryMb,
-            'operating_system' => $c->operatingSystem,
-            'operator' => $c->operator,
-            'network_technology' => $c->networkTechnology,
-            'wifi' => $c->wifi,
-            'bluetooth' => $c->bluetooth,
-            'camera_count' => $c->cameraCount,
-            'cpu_brand' => $c->cpuBrand,
-            'cpu_speed_ghz' => $c->cpuSpeedGhz,
-            'nfc' => $c->nfc,
-            'fingerprint' => $c->fingerprint,
-            'ir' => $c->ir,
-            'water_resistant' => $c->waterResistant,
-            'sim_count' => $c->simCount,
-        ];
+        // Si ya es array, devolver tal cual (asumimos shape correcto).
+        if (is_array($c)) {
+            return $this->normalizeArrayShape($c);
+        }
+
+        // Si implementa JsonSerializable, aprovecharlo.
+        if (is_object($c) && $c instanceof \JsonSerializable) {
+            return (array) $c->jsonSerialize();
+        }
+
+        // Si es un objeto (DTO o entidad con propiedades públicas), intentar mapear por propiedades públicas
+        if (is_object($c)) {
+            // Normalizar nombres: cuidamos camelCase vs snake_case
+            $props = get_object_vars($c);
+
+            // Si no existen propiedades, intentar método toArray si existe
+            if (empty($props) && method_exists($c, 'toArray')) {
+                $props = $c->toArray();
+            }
+
+            return $this->normalizeArrayShape($props);
+        }
+
+        // Fallback: devolver vacío
+        return [];
+    }
+
+    /**
+     * Convierte la lista de CellphoneResponse (o arrays) a la forma HTTP.
+     *
+     * Acepta:
+     *  - array de items + total,
+     *  - o una instancia de CellphoneListResponse (si JsonSerializable).
+     *
+     * @param array|mixed $itemsOrList
+     * @param int|null $total
+     * @return array<string,mixed>
+     */
+    public function toHttpList(mixed $itemsOrList, ?int $total = null): array
+    {
+        // Si recibimos la Dto list (ej. JsonSerializable), usarla directamente
+        if (is_object($itemsOrList) && $itemsOrList instanceof \JsonSerializable) {
+            $data = $itemsOrList->jsonSerialize();
+            return [
+                'items' => array_map(fn($it) => $this->toHttp($it), $data['items'] ?? []),
+                'total' => (int) ($data['total'] ?? 0),
+            ];
+        }
+
+        // Si pasaron items y total por separado
+        if (is_array($itemsOrList) && $total !== null) {
+            $mapped = array_map(fn($it) => $this->toHttp($it), $itemsOrList);
+            return ['items' => $mapped, 'total' => $total];
+        }
+
+        // Si nos dieron un array con keys items/total
+        if (is_array($itemsOrList) && array_key_exists('items', $itemsOrList)) {
+            $mapped = array_map(fn($it) => $this->toHttp($it), $itemsOrList['items'] ?? []);
+            return ['items' => $mapped, 'total' => (int) ($itemsOrList['total'] ?? 0)];
+        }
+
+        // Fallback vacío
+        return ['items' => [], 'total' => 0];
     }
 
     public function toUpdateCommand(array $dto, string $id): UpdateCellphoneCommand
@@ -92,5 +139,49 @@ final class CellphoneHttpMapper
         );
     }
 
-}
+    /**
+     * Normaliza shape y nombres de propiedades para salida HTTP.
+     *
+     * - acepta camelCase o snake_case en el input.
+     * - fuerza tipos primitivos donde aplica.
+     *
+     * @param array<string,mixed> $props
+     * @return array<string,mixed>
+     */
+    private function normalizeArrayShape(array $props): array
+    {
+        // Helper para leer prop con fallback de nombres
+        $get = function(array $p, array $keys, $default = null) {
+            foreach ($keys as $k) {
+                if (array_key_exists($k, $p)) {
+                    return $p[$k];
+                }
+            }
+            return $default;
+        };
 
+        return [
+            'id' => (string) $get($props, ['id', 'ID', 'Id'], ''),
+            'brand' => (string) $get($props, ['brand', 'brandName'], ''),
+            'imei' => (string) $get($props, ['imei'], ''),
+            'screen_size' => isset($props['screenSize']) ? (float)$props['screenSize'] : (isset($props['screen_size']) ? (float)$props['screen_size'] : null),
+            'megapixels' => isset($props['megapixels']) ? (float)$props['megapixels'] : (isset($props['megapixels']) ? (float)$props['megapixels'] : null),
+            'ram_mb' => isset($props['ramMb']) ? (int)$props['ramMb'] : (isset($props['ram_mb']) ? (int)$props['ram_mb'] : 0),
+            'storage_primary_mb' => isset($props['storagePrimaryMb']) ? (int)$props['storagePrimaryMb'] : (isset($props['storage_primary_mb']) ? (int)$props['storage_primary_mb'] : 0),
+            'storage_secondary_mb' => isset($props['storageSecondaryMb']) ? (int)$props['storageSecondaryMb'] : (isset($props['storage_secondary_mb']) ? (int)$props['storage_secondary_mb'] : null),
+            'operating_system' => (string) $get($props, ['operatingSystem','operating_system'], ''),
+            'operator' => $get($props, ['operator'], null),
+            'network_technology' => (string) $get($props, ['networkTechnology','network_technology'], ''),
+            'wifi' => (bool) $get($props, ['wifi'], false),
+            'bluetooth' => (bool) $get($props, ['bluetooth'], false),
+            'camera_count' => (int) $get($props, ['cameraCount','camera_count'], 0),
+            'cpu_brand' => (string) $get($props, ['cpuBrand','cpu_brand'], ''),
+            'cpu_speed_ghz' => isset($props['cpuSpeedGhz']) ? (float)$props['cpuSpeedGhz'] : (isset($props['cpu_speed_ghz']) ? (float)$props['cpu_speed_ghz'] : null),
+            'nfc' => (bool) $get($props, ['nfc'], false),
+            'fingerprint' => (bool) $get($props, ['fingerprint'], false),
+            'ir' => (bool) $get($props, ['ir'], false),
+            'water_resistant' => (bool) $get($props, ['waterResistant','water_resistant'], false),
+            'sim_count' => (int) $get($props, ['simCount','sim_count'], 0),
+        ];
+    }
+}

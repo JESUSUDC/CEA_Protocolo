@@ -5,7 +5,7 @@ namespace App\Application\Cellphone\Service;
 
 use App\Application\Cellphone\Port\In\ListCellphonesUseCase;
 use App\Application\Cellphone\Dto\Query\ListCellphonesQuery;
-use App\Application\Cellphone\Response\CellphoneListResponse;
+use App\Application\Cellphone\Dto\Response\CellphoneListResponse;
 use App\Application\Cellphone\Mapper\CellphoneMapper;
 use App\Application\Cellphone\Port\Out\CellphoneRepositoryPort;
 
