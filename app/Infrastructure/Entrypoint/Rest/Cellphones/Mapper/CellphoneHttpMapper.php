@@ -63,4 +63,33 @@ final class CellphoneHttpMapper
             'sim_count' => $c->simCount()->toInt(),
         ];
     }
+
+    public function toUpdateCommand(array $dto, string $id): \Application\Cellphone\Dto\Command\UpdateCellphoneCommand
+    {
+        return new \Application\Cellphone\Dto\Command\UpdateCellphoneCommand(
+            id: $id,
+            brand: $dto['brand'] ?? null,
+            imei: $dto['imei'] ?? null,
+            screenSize: isset($dto['screen_size']) ? (float)$dto['screen_size'] : null,
+            megapixels: isset($dto['megapixels']) ? (float)$dto['megapixels'] : null,
+            ramMb: isset($dto['ram_mb']) ? (int)$dto['ram_mb'] : null,
+            storagePrimaryMb: isset($dto['storage_primary_mb']) ? (int)$dto['storage_primary_mb'] : null,
+            storageSecondaryMb: isset($dto['storage_secondary_mb']) ? (int)$dto['storage_secondary_mb'] : null,
+            operatingSystem: $dto['operating_system'] ?? null,
+            operator: $dto['operator'] ?? null,
+            networkTechnology: $dto['network_technology'] ?? null,
+            wifi: isset($dto['wifi']) ? (bool)$dto['wifi'] : null,
+            bluetooth: isset($dto['bluetooth']) ? (bool)$dto['bluetooth'] : null,
+            cameraCount: isset($dto['camera_count']) ? (int)$dto['camera_count'] : null,
+            cpuBrand: $dto['cpu_brand'] ?? null,
+            cpuSpeedGhz: isset($dto['cpu_speed_ghz']) ? (float)$dto['cpu_speed_ghz'] : null,
+            nfc: isset($dto['nfc']) ? (bool)$dto['nfc'] : null,
+            fingerprint: isset($dto['fingerprint']) ? (bool)$dto['fingerprint'] : null,
+            ir: isset($dto['ir']) ? (bool)$dto['ir'] : null,
+            waterResistant: isset($dto['water_resistant']) ? (bool)$dto['water_resistant'] : null,
+            simCount: isset($dto['sim_count']) ? (int)$dto['sim_count'] : null,
+        );
+    }
+
 }
+

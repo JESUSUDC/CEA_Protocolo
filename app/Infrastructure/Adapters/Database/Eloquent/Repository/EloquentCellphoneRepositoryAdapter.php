@@ -26,7 +26,7 @@ use Carbon\Carbon;
 // NOTE: adapt the implemented interface name to your project
 use Application\Cellphone\Port\Out\CellphoneRepositoryPort;
 
-final class EloquentCellphoneRepositoryAdapter implements CellphoneRepository
+final class EloquentCellphoneRepositoryAdapter implements CellphoneRepositoryPort
 {
     public function __construct(private CellphoneModel $model)
     {
@@ -66,7 +66,7 @@ final class EloquentCellphoneRepositoryAdapter implements CellphoneRepository
         return $models->map(fn($m) => $this->toDomain($m))->all();
     }
 
-    public function remove(CellphoneEntity $cellphone): void
+    public function delete(CellphoneEntity $cellphone): void
     {
         CellphoneModel::destroy($cellphone->id()->toString());
     }

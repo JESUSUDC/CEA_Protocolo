@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Application\Port\Out;
+namespace Application\Cellphone\Port\Out;
 
 interface UnitOfWorkPort
 {

@@ -8,8 +8,29 @@ use Application\Users\Port\Out\UnitOfWorkPort;
 
 final class LaravelUnitOfWorkAdapter implements UnitOfWorkPort
 {
-    public function transactional(callable $work)
+    private bool $transactionStarted = false;
+
+    public function begin(): void
     {
-        return DB::transaction($work);
+        if (!$this->transactionStarted) {
+            DB::beginTransaction();
+            $this->transactionStarted = true;
+        }
+    }
+
+    public function commit(): void
+    {
+        if ($this->transactionStarted) {
+            DB::commit();
+            $this->transactionStarted = false;
+        }
+    }
+
+    public function rollback(): void
+    {
+        if ($this->transactionStarted) {
+            DB::rollBack();
+            $this->transactionStarted = false;
+        }
     }
 }

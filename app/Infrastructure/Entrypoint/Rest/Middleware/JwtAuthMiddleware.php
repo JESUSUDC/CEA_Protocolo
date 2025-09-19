@@ -6,7 +6,7 @@ namespace Infrastructure\Entrypoint\Rest\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Application\Security\Port\Out\TokenIssuerPort;
+use Application\Security\TokenIssuerPort;
 
 final class JwtAuthMiddleware
 {

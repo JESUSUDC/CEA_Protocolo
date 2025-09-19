@@ -1,0 +1,60 @@
+{
+  "info": {
+    "name": "API Cellphones",
+    "_postman_id": "cellphone-collection-001",
+    "description": "Colección de pruebas API Cellphones",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Registrar celular",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"brand\": \"Samsung\",\n  \"imei\": \"123456789012345\",\n  \"screen_size\": 6.5,\n  \"megapixels\": 48,\n  \"ram_mb\": 8192,\n  \"storage_primary_mb\": 128000,\n  \"network_technology\": \"5G\",\n  \"camera_count\": 4,\n  \"cpu_brand\": \"Snapdragon\",\n  \"cpu_speed_ghz\": 2.8,\n  \"sim_count\": 2\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": { "raw": "http://localhost:8000/api/v1/cellphones", "host": ["http://localhost:8000"], "path": ["api","v1","cellphones"] }
+      }
+    },
+    {
+      "name": "Listar celulares",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "http://localhost:8000/api/v1/cellphones?limit=50&offset=0", "host": ["http://localhost:8000"], "path": ["api","v1","cellphones"] }
+      }
+    },
+    {
+      "name": "Obtener celular por ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "http://localhost:8000/api/v1/cellphones/{{id}}", "host": ["http://localhost:8000"], "path": ["api","v1","cellphones","{{id}}"] }
+      }
+    },
+    {
+      "name": "Actualizar celular",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"brand\": \"Samsung Updated\",\n  \"screen_size\": 6.7\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": { "raw": "http://localhost:8000/api/v1/cellphones/{{id}}", "host": ["http://localhost:8000"], "path": ["api","v1","cellphones","{{id}}"] }
+      }
+    },
+    {
+      "name": "Eliminar celular",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": { "raw": "http://localhost:8000/api/v1/cellphones/{{id}}", "host": ["http://localhost:8000"], "path": ["api","v1","cellphones","{{id}}"] }
+      }
+    }
+  ]
+}

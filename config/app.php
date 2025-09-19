@@ -127,5 +127,6 @@ return [
         Infrastructure\Entrypoint\Rest\Providers\ApplicationBindingsServiceProvider::class,
         Infrastructure\Entrypoint\Rest\Providers\UserServiceProvider::class,
         Infrastructure\Entrypoint\Rest\Providers\CellphoneServiceProvider::class,
+        Infrastructure\Entrypoint\Rest\Providers\AuthServiceProvider::class,
     ]
 ];
