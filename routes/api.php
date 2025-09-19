@@ -18,14 +18,14 @@ Route::prefix('v1')->group(function () {
     Route::post('/users/login', [UserController::class, 'login']); // login
 
     // Protected
-    Route::middleware(['auth:api'])->group(function () {
+    //Route::middleware(['auth:api'])->group(function () {
         Route::get('/users', [UserController::class, 'index']);
         Route::get('/users/{id}', [UserController::class, 'show']);
         Route::put('/users/{id}', [UserController::class, 'update']);
         Route::delete('/users/{id}', [UserController::class, 'destroy']);
         Route::post('/users/{id}/change-password', [UserController::class, 'changePassword']);
         Route::post('/users/{id}/logout', [UserController::class, 'logout']);
-    });
+    //});
 
     // -------------------------
     // Cellphones
@@ -34,10 +34,10 @@ Route::prefix('v1')->group(function () {
     Route::post('/cellphones', [CellphoneController::class, 'store']); // register cellphone
 
     // Protected
-    Route::middleware(['auth:api'])->group(function () {
+    //Route::middleware(['auth:api'])->group(function () {
         Route::get('/cellphones', [CellphoneController::class, 'index']); // list
         Route::get('/cellphones/{id}', [CellphoneController::class, 'show']); // get by id
         Route::put('/cellphones/{id}', [CellphoneController::class, 'update']); // update
         Route::delete('/cellphones/{id}', [CellphoneController::class, 'destroy']); // delete
-    });
+    //});
 });

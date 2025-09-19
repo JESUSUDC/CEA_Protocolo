@@ -61,6 +61,10 @@ final class CellphoneController extends Controller
             $offset = (int) request()->query('offset', 0);
             $query = new ListCellphonesQuery($limit, $offset);
             $listResp = $this->listUseCase->execute($query);
+
+            // DEBUG: inspecciona qué llega del UseCase
+            dd($listResp);
+
             return response()->json(
                 $this->mapper->toHttpList($listResp->items, $listResp->total),
                 200

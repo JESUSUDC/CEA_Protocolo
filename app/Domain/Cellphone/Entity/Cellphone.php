@@ -138,6 +138,24 @@ final class Cellphone extends AggregateRoot
     public function imei(): Imei { return $this->imei; }
     public function brand(): Brand { return $this->brand; }
     public function isWaterResistant(): bool { return $this->waterResistant->value(); }
+    // Getters que faltaban
+    public function screenSize(): ScreenSize { return $this->screenSize; }
+    public function megapixels(): Megapixels { return $this->megapixels; }
+    public function ram(): RAM { return $this->ram; }
+    public function primaryStorage(): Storage { return $this->primaryStorage; }
+    public function secondaryStorage(): ?Storage { return $this->secondaryStorage; }
+    public function os(): OperatingSystem { return $this->os; }
+    public function operator(): ?Operator { return $this->operator; }
+    public function networkTechnology(): NetworkTechnology { return $this->networkTechnology; }
+    public function connectivity(): Connectivity { return $this->connectivity; }
+    public function cameras(): Cameras { return $this->cameras; }
+    public function cpu(): Cpu { return $this->cpu; }
+    public function nfc(): BooleanFeature { return $this->nfc; }
+    public function fingerprint(): BooleanFeature { return $this->fingerprint; }
+    public function ir(): BooleanFeature { return $this->ir; }
+    public function waterResistant(): BooleanFeature { return $this->waterResistant; }
+    public function simCount(): SimCount { return $this->simCount; }
+
 
     // Example behaviour: update core specifications (atomic operation)
     public function updateSpecifications(
