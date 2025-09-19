@@ -6,7 +6,9 @@ namespace Infrastructure\Entrypoint\Rest\Users\Controller;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Infrastructure\Entrypoint\Rest\Users\Request\CreateUserHttpRequest;
-use Illuminate\Http\Request;
+use Infrastructure\Entrypoint\Rest\Users\Request\LoginUserRequest;
+use Infrastructure\Entrypoint\Rest\Users\Request\UpdateUserHttpRequest;
+use Infrastructure\Entrypoint\Rest\Users\Request\ChangePasswordRequest;
 use Infrastructure\Entrypoint\Rest\Users\Mapper\UserHttpMapper;
 use Application\Users\Port\In\CreateUserUseCase;
 use Application\Users\Port\In\LoginUseCase;
@@ -16,10 +18,10 @@ use Application\Users\Port\In\UpdateUserUseCase;
 use Application\Users\Port\In\DeleteUserUseCase;
 use Application\Users\Port\In\ChangePasswordUseCase;
 use Application\Users\Port\In\LogoutUseCase;
-use Application\Users\Dto\Command\ChangePasswordCommand;
-use Application\Users\Dto\Command\CreateUserCommand;
+use Application\Users\Dto\Command\DeleteUserCommand;
 use Application\Users\Dto\Query\GetUserByIdQuery;
 use Application\Users\Dto\Query\ListUserQuery;
+use Application\Users\Dto\Command\ChangePasswordCommand;
 use Infrastructure\Entrypoint\Rest\Common\ErrorHandler\ApiExceptionHandler;
 
 final class UserController extends Controller
@@ -47,14 +49,10 @@ final class UserController extends Controller
         }
     }
 
-    public function login(Request $request): JsonResponse
+    public function login(LoginUserRequest $request): JsonResponse
     {
         try {
-            $data = $request->validate([
-                'username_or_email' => 'required|string',
-                'password' => 'required|string'
-            ]);
-
+            $data = $request->validated();
             $token = $this->loginUseCase->execute($data['username_or_email'], $data['password']);
             return response()->json(['token' => $token], 200);
         } catch (\Throwable $e) {
@@ -76,11 +74,12 @@ final class UserController extends Controller
         }
     }
 
-    public function index(Request $request): JsonResponse
+    public function index(): JsonResponse
     {
         try {
-            $limit = (int) ($request->query('limit', 50));
-            $offset = (int) ($request->query('offset', 0));
+            // request query params handled here (no form request needed)
+            $limit = (int) request()->query('limit', 50);
+            $offset = (int) request()->query('offset', 0);
             $query = new ListUserQuery($limit, $offset);
             $listResp = $this->listUsersUseCase->execute($query);
             return response()->json($this->mapper->toHttpList($listResp->items, $listResp->total), 200);
@@ -89,15 +88,10 @@ final class UserController extends Controller
         }
     }
 
-    public function update(Request $request, string $id): JsonResponse
+    public function update(UpdateUserHttpRequest $request, string $id): JsonResponse
     {
         try {
-            $validated = $request->validate([
-                'name' => 'sometimes|string|min:3',
-                'role' => 'sometimes|string|in:admin,user,support',
-                'email' => 'sometimes|email',
-                'username' => 'sometimes|string|min:3',
-            ]);
+            $validated = $request->validated();
             $command = $this->mapper->toUpdateCommand($validated, $id);
             $this->updateUserUseCase->execute($command);
             return response()->json([], 204);
@@ -109,20 +103,17 @@ final class UserController extends Controller
     public function destroy(string $id): JsonResponse
     {
         try {
-            $this->deleteUserUseCase->execute(new \Application\Users\Dto\Command\DeleteUserCommand($id));
+            $this->deleteUserUseCase->execute(new DeleteUserCommand($id));
             return response()->json([], 204);
         } catch (\Throwable $e) {
             return ApiExceptionHandler::handle($e);
         }
     }
 
-    public function changePassword(Request $request, string $id): JsonResponse
+    public function changePassword(ChangePasswordRequest $request, string $id): JsonResponse
     {
         try {
-            $payload = $request->validate([
-                'currentPassword' => 'required|string',
-                'newPassword' => 'required|string|min:8'
-            ]);
+            $payload = $request->validated();
             $command = new ChangePasswordCommand($id, $payload['currentPassword'], $payload['newPassword']);
             $this->changePasswordUseCase->execute($command);
             return response()->json([], 204);
@@ -131,7 +122,7 @@ final class UserController extends Controller
         }
     }
 
-    public function logout(Request $request, string $id): JsonResponse
+    public function logout(string $id): JsonResponse
     {
         try {
             $this->logoutUseCase->execute($id);
