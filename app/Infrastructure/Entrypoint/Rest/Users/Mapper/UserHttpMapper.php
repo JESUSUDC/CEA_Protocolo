@@ -4,32 +4,78 @@ declare(strict_types=1);
 namespace Infrastructure\Entrypoint\Rest\Users\Mapper;
 
 use Illuminate\Support\Str;
+use Application\Users\Dto\Command\CreateUserCommand;
+use Application\Users\Dto\Command\UpdateUserCommand;
+use Application\Users\Response\UserResponse;
 use Domain\Users\ValueObject\Role;
 
 final class UserHttpMapper
 {
-    public function toRegisterCommand(array $dto): array
+    /**
+     * Map validated HTTP payload to Application CreateUserCommand
+     *
+     * @param array $dto validated request data
+     * @return CreateUserCommand
+     */
+    public function toCreateCommand(array $dto): CreateUserCommand
+    {
+        $id = $dto['id'] ?? Str::uuid()->toString();
+        $role = $dto['role'] ?? 'user';
+
+        return new CreateUserCommand(
+            name: $dto['name'],
+            role: $role,
+            email: $dto['email'],
+            username: $dto['username'],
+            password: $dto['password'],
+            id: $id
+        );
+    }
+
+    /**
+     * Map validated HTTP payload to UpdateUserCommand
+     *
+     * @param array $dto
+     * @param string $userId
+     * @return UpdateUserCommand
+     */
+    public function toUpdateCommand(array $dto, string $userId): UpdateUserCommand
+    {
+        return new UpdateUserCommand(
+            userId: $userId,
+            name: $dto['name'] ?? null,
+            role: $dto['role'] ?? null,
+            email: $dto['email'] ?? null,
+            username: $dto['username'] ?? null
+        );
+    }
+
+    /**
+     * Map Application UserResponse to HTTP array
+     */
+    public function toHttp(UserResponse $r): array
     {
         return [
-            'id' => $dto['id'] ?? Str::uuid()->toString(),
-            'name' => $dto['name'],
-            'role' => $dto['role'] ?? Role::fromString('user')->toString(),
-            'email' => $dto['email'],
-            'username' => $dto['username'],
-            'password' => $dto['password'],
+            'id' => $r->id,
+            'name' => $r->name,
+            'role' => $r->role,
+            'email' => $r->email,
+            'username' => $r->username,
+            'active' => $r->active
         ];
     }
 
-    public function toHttp($userEntity): array
+    /**
+     * Map list of UserResponse to HTTP payload
+     *
+     * @param UserResponse[] $items
+     * @return array
+     */
+    public function toHttpList(array $items, int $total = 0): array
     {
-        // expects domain entity User
         return [
-            'id' => $userEntity->id()->toString(),
-            'name' => $userEntity->name()->toString(),
-            'role' => $userEntity->role()->toString(),
-            'email' => $userEntity->email()->toString(),
-            'username' => $userEntity->username()->toString(),
-            'active' => $userEntity->isActive()
+            'total' => $total,
+            'items' => array_map(fn(UserResponse $u) => $this->toHttp($u), $items)
         ];
     }
 }

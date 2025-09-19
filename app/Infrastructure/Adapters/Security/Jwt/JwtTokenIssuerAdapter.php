@@ -3,51 +3,52 @@ declare(strict_types=1);
 
 namespace Infrastructure\Adapters\Security\Jwt;
 
-use Application\Security\JwtTokenIssuer; // interface assumed
+use Application\Security\Port\Out\TokenIssuerPort;
+use Domain\Users\Entity\User;
 
-final class JwtTokenIssuerAdapter implements JwtTokenIssuer
+final class JwtTokenIssuerAdapter implements TokenIssuerPort
 {
     public function __construct(private string $secret, private int $ttlSeconds = 3600)
     {
     }
 
-    public function issue(array $claims): string
+    public function issue(User $user): string
     {
-        $header = $this->base64UrlEncode(json_encode(['alg' => 'HS256', 'typ' => 'JWT']));
+        $header = $this->b64url(json_encode(['alg' => 'HS256', 'typ' => 'JWT']));
         $now = time();
-        $payload = array_merge($claims, [
+        $payload = $this->b64url(json_encode([
+            'sub' => $user->id()->toString(),
+            'username' => $user->username()->toString(),
+            'role' => $user->role()->toString(),
             'iat' => $now,
             'exp' => $now + $this->ttlSeconds,
-        ]);
-        $payloadEncoded = $this->base64UrlEncode(json_encode($payload));
-        $sig = $this->sign($header . '.' . $payloadEncoded);
-        return sprintf('%s.%s.%s', $header, $payloadEncoded, $sig);
+        ]));
+        $signature = $this->b64url(hash_hmac('sha256', "$header.$payload", $this->secret, true));
+        return "$header.$payload.$signature";
     }
 
-    public function verify(string $token): bool
+    public function validate(string $token): bool
     {
-        $parts = explode('.', $token);
-        if (count($parts) !== 3) return false;
-        [$header, $payload, $sig] = $parts;
-        $expected = $this->sign($header . '.' . $payload);
-        if (!hash_equals($expected, $sig)) return false;
-        $payloadJson = json_decode($this->base64UrlDecode($payload), true);
-        if (!isset($payloadJson['exp'])) return false;
-        return time() <= (int)$payloadJson['exp'];
+        try {
+            $parts = explode('.', $token);
+            if (count($parts) !== 3) return false;
+            [$header, $payload, $sig] = $parts;
+            $expected = $this->b64url(hash_hmac('sha256', "$header.$payload", $this->secret, true));
+            if (!hash_equals($expected, $sig)) return false;
+            $data = json_decode($this->b64urldecode($payload), true);
+            if (!isset($data['exp'])) return false;
+            return time() <= (int)$data['exp'];
+        } catch (\Throwable) {
+            return false;
+        }
     }
 
-    private function sign(string $data): string
-    {
-        $raw = hash_hmac('sha256', $data, $this->secret, true);
-        return $this->base64UrlEncode($raw);
-    }
-
-    private function base64UrlEncode(string $data): string
+    private function b64url(string $data): string
     {
         return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
     }
 
-    private function base64UrlDecode(string $data): string
+    private function b64urldecode(string $data): string
     {
         $remainder = strlen($data) % 4;
         if ($remainder) $data .= str_repeat('=', 4 - $remainder);

@@ -3,30 +3,30 @@ declare(strict_types=1);
 
 namespace Infrastructure\Adapters\Security\Password;
 
-use Domain\Users\Service\Contracts\PasswordHasher;
-use Domain\Users\ValueObject\PasswordHash;
+use Application\Users\Port\Out\PasswordHasherPort;
 
-final class PasswordHasherAdapter implements PasswordHasher
+final class PasswordHasherAdapter implements PasswordHasherPort
 {
-    private int $algo = PASSWORD_BCRYPT;
+    private int $algo;
     private array $options;
 
     public function __construct(array $options = ['cost' => 12])
     {
+        $this->algo = PASSWORD_BCRYPT;
         $this->options = $options;
     }
 
-    public function hash(string $plain): PasswordHash
+    public function hash(string $plainPassword): string
     {
-        $h = password_hash($plain, $this->algo, $this->options);
+        $h = password_hash($plainPassword, $this->algo, $this->options);
         if ($h === false) {
             throw new \RuntimeException('Password hashing failed.');
         }
-        return PasswordHash::fromHash($h);
+        return $h;
     }
 
-    public function verify(string $plain, PasswordHash $hash): bool
+    public function verify(string $plainPassword, string $hashedPassword): bool
     {
-        return password_verify($plain, $hash->toString());
+        return password_verify($plainPassword, $hashedPassword);
     }
 }

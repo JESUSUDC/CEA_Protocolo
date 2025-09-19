@@ -3,17 +3,22 @@ declare(strict_types=1);
 
 namespace Infrastructure\Adapters\Security\Password;
 
-use Domain\Users\Service\Contracts\PasswordStrengthEvaluator;
+use Application\Users\Port\Out\PasswordStrengthPolicyPort;
 
-final class PasswordStrengthPolicyAdapter implements PasswordStrengthEvaluator
+final class PasswordStrengthPolicyAdapter implements PasswordStrengthPolicyPort
 {
-    // Example: at least 8 chars, upper, lower, digit
-    public function isStrongEnough(string $plain): bool
+    public function isStrong(string $password): bool
     {
-        if (mb_strlen($plain) < 8) return false;
-        if (!preg_match('/[A-Z]/', $plain)) return false;
-        if (!preg_match('/[a-z]/', $plain)) return false;
-        if (!preg_match('/\d/', $plain)) return false;
+        if (mb_strlen($password) < 8) return false;
+        if (!preg_match('/[A-Z]/', $password)) return false;
+        if (!preg_match('/[a-z]/', $password)) return false;
+        if (!preg_match('/\d/', $password)) return false;
+        // opcional: símbolos
         return true;
+    }
+
+    public function getPolicyDescription(): string
+    {
+        return 'Minimum 8 chars, upper, lower and digit.';
     }
 }
