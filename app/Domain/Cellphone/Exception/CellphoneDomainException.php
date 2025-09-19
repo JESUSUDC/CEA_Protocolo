@@ -5,6 +5,6 @@ namespace Domain\Cellphone\Exception;
 
 use RuntimeException;
 
-class DomainException extends RuntimeException
+class CellphoneDomainException extends RuntimeException
 {
 }
