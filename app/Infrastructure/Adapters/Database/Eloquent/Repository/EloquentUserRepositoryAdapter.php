@@ -13,7 +13,7 @@ use Domain\Users\Entity\User as UserEntity;
 use Carbon\Carbon;
 
 // NOTE: adapt interface name
-use Application\Users\Port\Out\UserRepository;
+use Application\Users\Port\Out\UserRepositoryPort;
 
 final class EloquentUserRepositoryAdapter implements UserRepository
 {

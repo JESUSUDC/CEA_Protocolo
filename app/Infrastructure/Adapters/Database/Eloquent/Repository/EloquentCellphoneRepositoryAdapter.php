@@ -24,7 +24,7 @@ use Illuminate\Support\Collection;
 use Carbon\Carbon;
 
 // NOTE: adapt the implemented interface name to your project
-use Application\Cellphone\Port\Out\CellphoneRepository;
+use Application\Cellphone\Port\Out\CellphoneRepositoryPort;
 
 final class EloquentCellphoneRepositoryAdapter implements CellphoneRepository
 {
