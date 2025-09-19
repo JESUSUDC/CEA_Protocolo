@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Application\Users\Service;
+namespace App\Application\Users\Service;
 
-use Application\Users\Port\In\ResetPasswordUseCase;
+use App\Application\Users\Port\In\ResetPasswordUseCase;
 
 final class ResetPasswordService implements ResetPasswordUseCase
 {

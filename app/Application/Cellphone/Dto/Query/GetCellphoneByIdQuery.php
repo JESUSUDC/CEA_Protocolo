@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Application\Cellphone\Dto\Query;
+namespace App\Application\Cellphone\Dto\Query;
 
 final class GetCellphoneByIdQuery
 {

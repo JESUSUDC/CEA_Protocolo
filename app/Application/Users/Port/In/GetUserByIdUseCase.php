@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Application\Users\Port\In;
+namespace App\Application\Users\Port\In;
 
-use Application\Users\Dto\Query\GetUserByIdQuery;
-use Application\Users\Response\UserResponse;
+use App\Application\Users\Dto\Query\GetUserByIdQuery;
+use App\Application\Users\Response\UserResponse;
 
 interface GetUserByIdUseCase
 {

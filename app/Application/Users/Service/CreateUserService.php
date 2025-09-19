@@ -1,20 +1,20 @@
 <?php
 declare(strict_types=1);
 
-namespace Application\Users\Service;
+namespace App\Application\Users\Service;
 
-use Application\Users\Port\In\CreateUserUseCase;
-use Application\Users\Dto\Command\CreateUserCommand;
-use Application\Users\Port\Out\UserRepositoryPort as OutUserRepository;
-use Application\Port\Out\UnitOfWork;
-use Domain\Users\ValueObject\UserId;
-use Domain\Users\ValueObject\UserName;
-use Domain\Users\ValueObject\Role;
-use Domain\Users\ValueObject\Email;
-use Domain\Users\ValueObject\PasswordHash;
-use Domain\Users\Entity\User;
-use Domain\Users\Service\Contracts\PasswordHasher;
-use Domain\Users\Service\Contracts\PasswordStrengthEvaluator;
+use App\Application\Users\Port\In\CreateUserUseCase;
+use App\Application\Users\Dto\Command\CreateUserCommand;
+use App\Application\Users\Port\Out\UserRepositoryPort as OutUserRepository;
+use App\Application\Users\Port\Out\UnitOfWorkPort as UnitOfWork;
+use App\Domain\Users\ValueObject\UserId;
+use App\Domain\Users\ValueObject\UserName;
+use App\Domain\Users\ValueObject\Role;
+use App\Domain\Users\ValueObject\Email;
+use App\Domain\Users\ValueObject\PasswordHash;
+use App\Domain\Users\Entity\User;
+use App\Domain\Users\Service\Contracts\PasswordHasher;
+use App\Domain\Users\Service\Contracts\PasswordStrengthEvaluator;
 
 final class CreateUserService implements CreateUserUseCase
 {

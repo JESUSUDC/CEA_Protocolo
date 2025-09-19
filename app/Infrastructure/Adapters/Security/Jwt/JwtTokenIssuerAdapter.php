@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Infrastructure\Adapters\Security\Jwt;
 
-use Application\Security\TokenIssuerPort;
-use Domain\Users\Entity\User;
+use App\Application\Security\TokenIssuerPort;
+use App\Domain\Users\Entity\User;
 
 final class JwtTokenIssuerAdapter implements TokenIssuerPort
 {

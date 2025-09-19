@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Application\Users\Mapper;
+namespace App\Application\Users\Mapper;
 
-use Domain\Users\Entity\User;
-use Application\Users\Response\UserResponse;
+use App\Domain\Users\Entity\User;
+use App\Application\Users\Response\UserResponse;
 
 final class UserMapper
 {

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Domain\Shared;
+namespace App\Domain\Shared;
 
 abstract class AggregateRoot
 {

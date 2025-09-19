@@ -1,28 +1,28 @@
 <?php
 declare(strict_types=1);
 
-namespace Infrastructure\Entrypoint\Rest\Users\Controller;
+namespace App\Infrastructure\Entrypoint\Rest\Users\Controller;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
-use Infrastructure\Entrypoint\Rest\Users\Request\CreateUserHttpRequest;
-use Infrastructure\Entrypoint\Rest\Users\Request\LoginUserRequest;
-use Infrastructure\Entrypoint\Rest\Users\Request\UpdateUserHttpRequest;
-use Infrastructure\Entrypoint\Rest\Users\Request\ChangePasswordRequest;
-use Infrastructure\Entrypoint\Rest\Users\Mapper\UserHttpMapper;
-use Application\Users\Port\In\CreateUserUseCase;
-use Application\Users\Port\In\LoginUseCase;
-use Application\Users\Port\In\GetUserByIdUseCase;
-use Application\Users\Port\In\ListUsersUseCase;
-use Application\Users\Port\In\UpdateUserUseCase;
-use Application\Users\Port\In\DeleteUserUseCase;
-use Application\Users\Port\In\ChangePasswordUseCase;
-use Application\Users\Port\In\LogoutUseCase;
-use Application\Users\Dto\Command\DeleteUserCommand;
-use Application\Users\Dto\Query\GetUserByIdQuery;
-use Application\Users\Dto\Query\ListUserQuery;
-use Application\Users\Dto\Command\ChangePasswordCommand;
-use Infrastructure\Entrypoint\Rest\Common\ErrorHandler\ApiExceptionHandler;
+use App\Infrastructure\Entrypoint\Rest\Users\Request\CreateUserHttpRequest;
+use App\Infrastructure\Entrypoint\Rest\Users\Request\LoginUserRequest;
+use App\Infrastructure\Entrypoint\Rest\Users\Request\UpdateUserHttpRequest;
+use App\Infrastructure\Entrypoint\Rest\Users\Request\ChangePasswordRequest;
+use App\Infrastructure\Entrypoint\Rest\Users\Mapper\UserHttpMapper;
+use App\Application\Users\Port\In\CreateUserUseCase;
+use App\Application\Users\Port\In\LoginUseCase;
+use App\Application\Users\Port\In\GetUserByIdUseCase;
+use App\Application\Users\Port\In\ListUsersUseCase;
+use App\Application\Users\Port\In\UpdateUserUseCase;
+use App\Application\Users\Port\In\DeleteUserUseCase;
+use App\Application\Users\Port\In\ChangePasswordUseCase;
+use App\Application\Users\Port\In\LogoutUseCase;
+use App\Application\Users\Dto\Command\DeleteUserCommand;
+use App\Application\Users\Dto\Query\GetUserByIdQuery;
+use App\Application\Users\Dto\Query\ListUserQuery;
+use App\Application\Users\Dto\Command\ChangePasswordCommand;
+use App\Infrastructure\Entrypoint\Rest\Common\ErrorHandler\ApiExceptionHandler;
 
 final class UserController extends Controller
 {

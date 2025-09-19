@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Infrastructure\Entrypoint\Rest\Users\Mapper;
+namespace App\Infrastructure\Entrypoint\Rest\Users\Mapper;
 
 use Illuminate\Support\Str;
 use Application\Users\Dto\Command\CreateUserCommand;

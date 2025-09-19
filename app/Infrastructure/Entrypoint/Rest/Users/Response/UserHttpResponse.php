@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Infrastructure\Entrypoint\Rest\Users\Response;
+namespace App\Infrastructure\Entrypoint\Rest\Users\Response;
 
 final class UserHttpResponse
 {

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Application\Security;
+namespace App\Application\Security;
 
 interface JwtTokenIssuer
 {

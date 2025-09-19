@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Application\Users\Dto\Query;
+namespace App\Application\Users\Dto\Query;
 
 final class ListUserQuery
 {

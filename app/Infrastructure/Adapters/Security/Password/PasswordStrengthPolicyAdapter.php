@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Infrastructure\Adapters\Security\Password;
+namespace App\Infrastructure\Adapters\Security\Password;
 
-use Application\Users\Port\Out\PasswordStrengthPolicyPort;
+use App\Application\Users\Port\Out\PasswordStrengthPolicyPort;
 
 final class PasswordStrengthPolicyAdapter implements PasswordStrengthPolicyPort
 {

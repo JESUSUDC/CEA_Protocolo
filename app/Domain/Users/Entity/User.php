@@ -1,23 +1,24 @@
 <?php
 declare(strict_types=1);
 
-namespace Domain\Users\Entity;
+namespace App\Domain\Users\Entity;
 
-use Domain\Shared\AggregateRoot;
-use Domain\Users\ValueObject\UserId;
-use Domain\Users\ValueObject\UserName;
-use Domain\Users\ValueObject\Role;
-use Domain\Users\ValueObject\PasswordHash;
-use Domain\Users\ValueObject\Email;
-use Domain\Users\Event\UserRegistered;
-use Domain\Users\Event\UserPasswordChanged;
-use Domain\Users\Event\UserDeactivated;
-use Domain\Users\Event\UserReactivated;
-use Domain\Users\Event\UserRenamed;
-use Domain\Users\Event\UserRoleAssigned;
-use Domain\Users\Exception\UserAlreadyActive;
-use Domain\Users\Exception\UserAlreadyInactive;
-use Domain\Users\Exception\InvalidPassword;
+use App\Domain\Shared\AggregateRoot;
+use App\Domain\Users\ValueObject\UserId;
+use App\Domain\Users\ValueObject\UserName;
+use App\Domain\Users\ValueObject\Role;
+use App\Domain\Users\ValueObject\PasswordHash;
+use App\Domain\Users\ValueObject\Email;
+use App\Domain\Users\Event\UserRegistered;
+use App\Domain\Users\Event\UserPasswordChanged;
+use App\Domain\Users\Event\UserDeactivated;
+use App\Domain\Users\Event\UserReactivated;
+use App\Domain\Users\Event\UserRenamed;
+use App\Domain\Users\Event\UserRoleAssigned;
+use App\Domain\Users\Exception\UserAlreadyActive;
+use App\Domain\Users\Exception\UserAlreadyInactive;
+use App\Domain\Users\Exception\InvalidPassword;
+use App\Domain\Users\Service\Contracts\PasswordHasher;
 
 final class User extends AggregateRoot
 {
@@ -134,7 +135,7 @@ final class User extends AggregateRoot
      * Domain-level password verification (delegates to a PasswordHasher).
      * We don't implement hashing here; application injects a hasher.
      */
-    public function verifyPassword(string $plain, \Domain\Users\Service\Contracts\PasswordHasher $hasher): bool
+    public function verifyPassword(string $plain, PasswordHasher $hasher): bool
     {
         return $hasher->verify($plain, $this->password);
     }

@@ -1,25 +1,25 @@
 <?php
 declare(strict_types=1);
 
-namespace Application\Cellphone\Service;
+namespace App\Application\Cellphone\Service;
 
-use Application\Cellphone\Port\In\UpdateCellphoneUseCase;
-use Application\Cellphone\Dto\Command\UpdateCellphoneCommand;
-use Application\Cellphone\Port\Out\CellphoneRepositoryPort;
-use Application\Port\Out\UnitOfWorkPort;
-use Domain\Cellphone\ValueObject\Brand;
-use Domain\Cellphone\ValueObject\ScreenSize;
-use Domain\Cellphone\ValueObject\Megapixels;
-use Domain\Cellphone\ValueObject\RAM;
-use Domain\Cellphone\ValueObject\Storage;
-use Domain\Cellphone\ValueObject\OperatingSystem;
-use Domain\Cellphone\ValueObject\Operator as OperatorVO;
-use Domain\Cellphone\ValueObject\NetworkTechnology;
-use Domain\Cellphone\ValueObject\Connectivity;
-use Domain\Cellphone\ValueObject\Cameras;
-use Domain\Cellphone\ValueObject\Cpu;
-use Domain\Cellphone\ValueObject\BooleanFeature;
-use Domain\Cellphone\ValueObject\SimCount;
+use App\Application\Cellphone\Port\In\UpdateCellphoneUseCase;
+use App\Application\Cellphone\Dto\Command\UpdateCellphoneCommand;
+use App\Application\Cellphone\Port\Out\CellphoneRepositoryPort;
+use App\Application\Users\Port\Out\UnitOfWorkPort;
+use App\Domain\Cellphone\ValueObject\Brand;
+use App\Domain\Cellphone\ValueObject\ScreenSize;
+use App\Domain\Cellphone\ValueObject\Megapixels;
+use App\Domain\Cellphone\ValueObject\RAM;
+use App\Domain\Cellphone\ValueObject\Storage;
+use App\Domain\Cellphone\ValueObject\OperatingSystem;
+use App\Domain\Cellphone\ValueObject\Operator as OperatorVO;
+use App\Domain\Cellphone\ValueObject\NetworkTechnology;
+use App\Domain\Cellphone\ValueObject\Connectivity;
+use App\Domain\Cellphone\ValueObject\Cameras;
+use App\Domain\Cellphone\ValueObject\Cpu;
+use App\Domain\Cellphone\ValueObject\BooleanFeature;
+use App\Domain\Cellphone\ValueObject\SimCount;
 
 final class UpdateCellphoneService implements UpdateCellphoneUseCase
 {

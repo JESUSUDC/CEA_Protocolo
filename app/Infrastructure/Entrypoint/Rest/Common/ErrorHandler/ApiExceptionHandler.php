@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Infrastructure\Entrypoint\Rest\Common\ErrorHandler;
+namespace App\Infrastructure\Entrypoint\Rest\Common\ErrorHandler;
 
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;

@@ -1,8 +1,8 @@
 <?php
 
-namespace Application\Users\Port\Out;
+namespace App\Application\Users\Port\Out;
 
-use Domain\Users\Entity\User;
+use App\Domain\Users\Entity\User;
 
 interface PasswordResetTokenPort
 {

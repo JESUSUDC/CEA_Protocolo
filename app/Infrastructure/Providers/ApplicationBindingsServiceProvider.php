@@ -1,36 +1,36 @@
 <?php
 declare(strict_types=1);
 
-namespace Infrastructure\Entrypoint\Rest\Providers;
+namespace App\Infrastructure\Entrypoint\Rest\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
 /* Ports In (use-cases) */
-use Application\Users\Port\In\CreateUserUseCase;
-use Application\Users\Port\In\LoginUseCase;
-use Application\Users\Port\In\GetUserByIdUseCase;
-use Application\Users\Port\In\ListUsersUseCase;
-use Application\Users\Port\In\UpdateUserUseCase;
-use Application\Users\Port\In\DeleteUserUseCase;
-use Application\Users\Port\In\ChangePasswordUseCase;
-use Application\Users\Port\In\LogoutUseCase;
+use App\Application\Users\Port\In\CreateUserUseCase;
+use App\Application\Users\Port\In\LoginUseCase;
+use App\Application\Users\Port\In\GetUserByIdUseCase;
+use App\Application\Users\Port\In\ListUsersUseCase;
+use App\Application\Users\Port\In\UpdateUserUseCase;
+use App\Application\Users\Port\In\DeleteUserUseCase;
+use App\Application\Users\Port\In\ChangePasswordUseCase;
+use App\Application\Users\Port\In\LogoutUseCase;
 
 /* Services (implementations) */
-use Application\Users\Service\CreateUserService;
-use Application\Users\Service\LoginService;
-use Application\Users\Service\GetUserByIdService;
-use Application\Users\Service\ListUsersService;
-use Application\Users\Service\UpdateUserService;
-use Application\Users\Service\DeleteUserService;
-use Application\Users\Service\ChangePasswordService;
-use Application\Users\Service\LogoutService;
+use App\Application\Users\Service\CreateUserService;
+use App\Application\Users\Service\LoginService;
+use App\Application\Users\Service\GetUserByIdService;
+use App\Application\Users\Service\ListUsersService;
+use App\Application\Users\Service\UpdateUserService;
+use App\Application\Users\Service\DeleteUserService;
+use App\Application\Users\Service\ChangePasswordService;
+use App\Application\Users\Service\LogoutService;
 
 /* Ports Out (interfaces required by services) */
-use Application\Users\Port\Out\UserRepositoryPort;
-use Application\Users\Port\Out\PasswordHasherPort;
-use Application\Users\Port\Out\PasswordStrengthPolicyPort;
-use Application\Users\Port\Out\UnitOfWorkPort; // if you used UnitOfWorkPort
-use Application\Security\Port\Out\TokenIssuerPort;
+use App\Application\Users\Port\Out\UserRepositoryPort;
+use App\Application\Users\Port\Out\PasswordHasherPort;
+use App\Application\Users\Port\Out\PasswordStrengthPolicyPort;
+use App\Application\Users\Port\Out\UnitOfWorkPort; // if you used UnitOfWorkPort
+use App\Application\Security\Port\Out\TokenIssuerPort;
 
 /* Additional helpers */
 use Application\Users\Mapper\UserMapper;

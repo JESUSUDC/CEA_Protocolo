@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Application\Users\Service;
+namespace App\Application\Users\Service;
 
-use Application\Users\Port\In\RequestPasswordUseCase;
-use Application\Port\Out\UserRepositoryPort as OutUserRepository;
+use App\Application\Users\Port\In\RequestPasswordUseCase;
+use App\Application\Users\Port\Out\UserRepositoryPort as OutUserRepository;
 
 final class RequestPasswordService implements RequestPasswordUseCase
 {

@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Domain\Users\ValueObject;
+namespace App\Domain\Users\ValueObject;
 
-use Domain\Users\Exception\InvalidUserName;
+use App\Domain\Users\Exception\InvalidUserName;
 
 final class UserName
 {

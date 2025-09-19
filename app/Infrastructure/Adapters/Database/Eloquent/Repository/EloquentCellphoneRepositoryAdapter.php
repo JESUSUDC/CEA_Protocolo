@@ -1,25 +1,25 @@
 <?php
 declare(strict_types=1);
 
-namespace Infrastructure\Adapters\Database\Eloquent\Repository;
+namespace App\Infrastructure\Adapters\Database\Eloquent\Repository;
 
-use Infrastructure\Adapters\Database\Eloquent\Model\Cellphone as CellphoneModel;
-use Domain\Cellphone\ValueObject\CellphoneId;
-use Domain\Cellphone\ValueObject\Brand;
-use Domain\Cellphone\ValueObject\Imei;
-use Domain\Cellphone\ValueObject\ScreenSize;
-use Domain\Cellphone\ValueObject\Megapixels;
-use Domain\Cellphone\ValueObject\RAM;
-use Domain\Cellphone\ValueObject\Storage;
-use Domain\Cellphone\ValueObject\OperatingSystem;
-use Domain\Cellphone\ValueObject\Operator as OperatorVO;
-use Domain\Cellphone\ValueObject\NetworkTechnology;
-use Domain\Cellphone\ValueObject\Connectivity;
-use Domain\Cellphone\ValueObject\Cameras;
-use Domain\Cellphone\ValueObject\Cpu;
-use Domain\Cellphone\ValueObject\BooleanFeature;
-use Domain\Cellphone\ValueObject\SimCount;
-use Domain\Cellphone\Entity\Cellphone as CellphoneEntity;
+use App\Infrastructure\Adapters\Database\Eloquent\Model\Cellphone as CellphoneModel;
+use App\Domain\Cellphone\ValueObject\CellphoneId;
+use App\Domain\Cellphone\ValueObject\Brand;
+use App\Domain\Cellphone\ValueObject\Imei;
+use App\Domain\Cellphone\ValueObject\ScreenSize;
+use App\Domain\Cellphone\ValueObject\Megapixels;
+use App\Domain\Cellphone\ValueObject\RAM;
+use App\Domain\Cellphone\ValueObject\Storage;
+use App\Domain\Cellphone\ValueObject\OperatingSystem;
+use App\Domain\Cellphone\ValueObject\Operator as OperatorVO;
+use App\Domain\Cellphone\ValueObject\NetworkTechnology;
+use App\Domain\Cellphone\ValueObject\Connectivity;
+use App\Domain\Cellphone\ValueObject\Cameras;
+use App\Domain\Cellphone\ValueObject\Cpu;
+use App\Domain\Cellphone\ValueObject\BooleanFeature;
+use App\Domain\Cellphone\ValueObject\SimCount;
+use App\Domain\Cellphone\Entity\Cellphone as CellphoneEntity;
 use Illuminate\Support\Collection;
 use Carbon\Carbon;
 

@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace Infrastructure\Entrypoint\Rest\Providers;
+namespace App\Infrastructure\Entrypoint\Rest\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Infrastructure\Adapters\Database\Eloquent\Model\CellphoneModel;
-use Infrastructure\Adapters\Database\Eloquent\Repository\EloquentCellphoneRepositoryAdapter;
-use Infrastructure\Entrypoint\Rest\Cellphones\Mapper\CellphoneHttpMapper;
-use Infrastructure\Adapters\Database\Eloquent\UnitOfWork\LaravelUnitOfWorkAdapter;
-use Infrastructure\Adapters\Security\Password\PasswordHasherAdapter; // if needed
-use Application\Cellphone\Port\Out\CellphoneRepositoryPort;
+use App\Infrastructure\Adapters\Database\Eloquent\Model\CellphoneModel;
+use App\Infrastructure\Adapters\Database\Eloquent\Repository\EloquentCellphoneRepositoryAdapter;
+use App\Infrastructure\Entrypoint\Rest\Cellphones\Mapper\CellphoneHttpMapper;
+use App\Infrastructure\Adapters\Database\Eloquent\UnitOfWork\LaravelUnitOfWorkAdapter;
+use App\Infrastructure\Adapters\Security\Password\PasswordHasherAdapter; // if needed
+use App\Application\Cellphone\Port\Out\CellphoneRepositoryPort;
 
 class CellphoneServiceProvider extends ServiceProvider
 {
@@ -23,7 +23,7 @@ class CellphoneServiceProvider extends ServiceProvider
             return new EloquentCellphoneRepositoryAdapter($app->make(CellphoneModel::class));
         });
 
-        $this->app->singleton(\Application\Users\Port\Out\UnitOfWorkPort::class, function () {
+        $this->app->singleton(\App\Application\Users\Port\Out\UnitOfWorkPort::class, function () {
             return new LaravelUnitOfWorkAdapter();
         });
 

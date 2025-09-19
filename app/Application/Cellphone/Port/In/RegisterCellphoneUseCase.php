@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Application\Cellphone\Port\In;
+namespace App\Application\Cellphone\Port\In;
 
-use Application\Cellphone\Dto\Command\CreateCellphoneCommand;
+use App\Application\Cellphone\Dto\Command\CreateCellphoneCommand;
 
 interface RegisterCellphoneUseCase
 {

@@ -1,26 +1,26 @@
 <?php
 declare(strict_types=1);
 
-namespace Domain\Cellphone\Entity;
+namespace App\Domain\Cellphone\Entity;
 
-use Domain\Shared\AggregateRoot;
-use Domain\Cellphone\ValueObject\CellphoneId;
-use Domain\Cellphone\ValueObject\Brand;
-use Domain\Cellphone\ValueObject\Imei;
-use Domain\Cellphone\ValueObject\ScreenSize;
-use Domain\Cellphone\ValueObject\Megapixels;
-use Domain\Cellphone\ValueObject\RAM;
-use Domain\Cellphone\ValueObject\Storage;
-use Domain\Cellphone\ValueObject\OperatingSystem;
-use Domain\Cellphone\ValueObject\Operator;
-use Domain\Cellphone\ValueObject\NetworkTechnology;
-use Domain\Cellphone\ValueObject\Connectivity;
-use Domain\Cellphone\ValueObject\Cameras;
-use Domain\Cellphone\ValueObject\Cpu;
-use Domain\Cellphone\ValueObject\BooleanFeature;
-use Domain\Cellphone\ValueObject\SimCount;
-use Domain\Cellphone\Event\CellphoneRegistered;
-use Domain\Cellphone\Event\CellphoneSpecificationsUpdated;
+use App\Domain\Shared\AggregateRoot;
+use App\Domain\Cellphone\ValueObject\CellphoneId;
+use App\Domain\Cellphone\ValueObject\Brand;
+use App\Domain\Cellphone\ValueObject\Imei;
+use App\Domain\Cellphone\ValueObject\ScreenSize;
+use App\Domain\Cellphone\ValueObject\Megapixels;
+use App\Domain\Cellphone\ValueObject\RAM;
+use App\Domain\Cellphone\ValueObject\Storage;
+use App\Domain\Cellphone\ValueObject\OperatingSystem;
+use App\Domain\Cellphone\ValueObject\Operator;
+use App\Domain\Cellphone\ValueObject\NetworkTechnology;
+use App\Domain\Cellphone\ValueObject\Connectivity;
+use App\Domain\Cellphone\ValueObject\Cameras;
+use App\Domain\Cellphone\ValueObject\Cpu;
+use App\Domain\Cellphone\ValueObject\BooleanFeature;
+use App\Domain\Cellphone\ValueObject\SimCount;
+use App\Domain\Cellphone\Event\CellphoneRegistered;
+use App\Domain\Cellphone\Event\CellphoneSpecificationsUpdated;
 
 final class Cellphone extends AggregateRoot
 {

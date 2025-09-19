@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace Application\Users\Service;
+namespace App\Application\Users\Service;
 
-use Application\Users\Port\In\GetUserByIdUseCase;
-use Application\Users\Dto\Query\GetUserByIdQuery;
-use Application\Users\Response\UserResponse;
-use Application\Users\Mapper\UserMapper;
-use Application\Users\Port\Out\UserRepositoryPort as OutUserRepository;
-use Domain\Users\ValueObject\UserId;
+use App\Application\Users\Port\In\GetUserByIdUseCase;
+use App\Application\Users\Dto\Query\GetUserByIdQuery;
+use App\Application\Users\Response\UserResponse;
+use App\Application\Users\Mapper\UserMapper;
+use App\Application\Users\Port\Out\UserRepositoryPort as OutUserRepository;
+use App\Domain\Users\ValueObject\UserId;
 
 final class GetUserByIdService implements GetUserByIdUseCase
 {
@@ -19,7 +19,7 @@ final class GetUserByIdService implements GetUserByIdUseCase
 
     public function execute(GetUserByIdQuery $query): ?UserResponse
     {
-        $user = $this->userRepository->findById(UserId::fromString($query->userId));
+        $user = $this->userRepository->findById($query->userId);
         if ($user === null) {
             return null;
         }

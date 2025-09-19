@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Application\Cellphone\Mapper;
+namespace App\Application\Cellphone\Mapper;
 
-use Domain\Cellphone\Entity\Cellphone;
-use Application\Cellphone\Response\CellphoneResponse;
+use App\Domain\Cellphone\Entity\Cellphone;
+use App\Application\Cellphone\Response\CellphoneResponse;
 
 final class CellphoneMapper
 {

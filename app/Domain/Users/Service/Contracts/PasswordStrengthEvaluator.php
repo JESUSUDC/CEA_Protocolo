@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Domain\Users\Service\Contracts;
+namespace App\Domain\Users\Service\Contracts;
 
 interface PasswordStrengthEvaluator
 {

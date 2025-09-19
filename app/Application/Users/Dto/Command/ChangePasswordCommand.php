@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Application\Users\Dto\Command;
+namespace App\Application\Users\Dto\Command;
 
 final class ChangePasswordCommand
 {

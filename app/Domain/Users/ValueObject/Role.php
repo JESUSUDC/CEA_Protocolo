@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Domain\Users\ValueObject;
+namespace App\Domain\Users\ValueObject;
 
-use Domain\Users\Exception\InvalidRole;
+use App\Domain\Users\Exception\InvalidRole;
 
 final class Role
 {

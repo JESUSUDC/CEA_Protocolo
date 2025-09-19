@@ -1,16 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace Infrastructure\Adapters\Database\Eloquent\Repository;
+namespace App\Infrastructure\Adapters\Database\Eloquent\Repository;
 
-use Infrastructure\Adapters\Database\Eloquent\Model\UserModel;
-use Application\Users\Port\Out\UserRepositoryPort;
-use Domain\Users\ValueObject\UserId;
-use Domain\Users\Entity\User;
-use Domain\Users\ValueObject\UserName;
-use Domain\Users\ValueObject\Role;
-use Domain\Users\ValueObject\Email;
-use Domain\Users\ValueObject\PasswordHash;
+use App\Infrastructure\Adapters\Database\Eloquent\Model\UserModel;
+use App\Application\Users\Port\Out\UserRepositoryPort;
+use App\Domain\Users\ValueObject\UserId;
+use App\Domain\Users\Entity\User;
+use App\Domain\Users\ValueObject\UserName;
+use App\Domain\Users\ValueObject\Role;
+use App\Domain\Users\ValueObject\Email;
+use App\Domain\Users\ValueObject\PasswordHash;
 
 final class EloquentUserRepositoryAdapter implements UserRepositoryPort
 {

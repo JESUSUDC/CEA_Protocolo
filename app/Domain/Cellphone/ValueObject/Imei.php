@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Domain\Cellphone\ValueObject;
+namespace App\Domain\Cellphone\ValueObject;
 
-use Domain\Cellphone\Exception\InvalidImei;
+use App\Domain\Cellphone\Exception\InvalidImei;
 
 final class Imei
 {

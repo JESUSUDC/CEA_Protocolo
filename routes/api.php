@@ -1,13 +1,24 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Infrastructure\Entrypoint\Rest\Users\Controller\UserController;
-use Infrastructure\Entrypoint\Rest\Cellphones\Controller\CellphoneController;
+use App\Infrastructure\Entrypoint\Rest\Users\Controller\UserController;
+use App\Infrastructure\Entrypoint\Rest\Cellphones\Controller\CellphoneController;
+use App\Infrastructure\Entrypoint\Rest\Cellphones\Controller\CellController;
 
 /*
 | API routes for Users (hexagonal entrypoint)
 | Se recomienda proteger las rutas sensibles con middleware 'auth:api' o JWT middleware.
 */
+
+Route::get('/test', function() {
+    return response()->json(['message' => 'Ruta funciona']);
+});
+
+Route::get('/cellphones', [CellController::class, 'index']);
+
+Route::get('/test2', [\App\Http\Controllers\TestController::class, 'index']);
+
+
 
 Route::prefix('v1')->group(function () {
     // -------------------------

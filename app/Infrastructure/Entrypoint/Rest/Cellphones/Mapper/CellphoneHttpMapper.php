@@ -1,12 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Infrastructure\Entrypoint\Rest\Cellphones\Mapper;
+namespace App\Infrastructure\Entrypoint\Rest\Cellphones\Mapper;
 
-use Domain\Cellphone\Entity\Cellphone;
+use App\Domain\Cellphone\Entity\Cellphone;
 use Illuminate\Http\Request;
-use Application\Cellphone\Dto\Command\CreateCellphoneCommand;
-use Application\Cellphone\Dto\Command\UpdateCellphoneCommand;
+use App\Application\Cellphone\Dto\Command\CreateCellphoneCommand;
+use App\Application\Cellphone\Dto\Command\UpdateCellphoneCommand;
+use App\Application\Cellphone\Response\CellphoneResponse;
 
 final class CellphoneHttpMapper
 {
@@ -37,30 +38,30 @@ final class CellphoneHttpMapper
         );
     }
 
-    public function toHttp(Cellphone $c): array
+    public function toHttp(CellphoneResponse $c): array
     {
         return [
-            'id' => $c->id()->toString(),
-            'brand' => $c->brand()->toString(),
-            'imei' => $c->imei()->toString(),
-            'screen_size' => $c->screenSize()->toFloat(),
-            'megapixels' => $c->megapixels()->toFloat(),
-            'ram_mb' => $c->ram()->toMegabytes(),
-            'storage_primary_mb' => $c->primaryStorage()->toMegabytes(),
-            'storage_secondary_mb' => $c->secondaryStorage()?->toMegabytes(),
-            'operating_system' => $c->os()->toString(),
-            'operator' => $c->operator()?->toString(),
-            'network_technology' => $c->networkTechnology()->toString(),
-            'wifi' => $c->connectivity()->hasWifi(),
-            'bluetooth' => $c->connectivity()->hasBluetooth(),
-            'camera_count' => $c->cameras()->toInt(),
-            'cpu_brand' => $c->cpu()->brand(),
-            'cpu_speed_ghz' => $c->cpu()->ghz(),
-            'nfc' => $c->nfc()->value(),
-            'fingerprint' => $c->fingerprint()->value(),
-            'ir' => $c->ir()->value(),
-            'water_resistant' => $c->waterResistant()->value(),
-            'sim_count' => $c->simCount()->toInt(),
+            'id' => $c->id,
+            'brand' => $c->brand,
+            'imei' => $c->imei,
+            'screen_size' => $c->screenSize,
+            'megapixels' => $c->megapixels,
+            'ram_mb' => $c->ramMb,
+            'storage_primary_mb' => $c->storagePrimaryMb,
+            'storage_secondary_mb' => $c->storageSecondaryMb,
+            'operating_system' => $c->operatingSystem,
+            'operator' => $c->operator,
+            'network_technology' => $c->networkTechnology,
+            'wifi' => $c->wifi,
+            'bluetooth' => $c->bluetooth,
+            'camera_count' => $c->cameraCount,
+            'cpu_brand' => $c->cpuBrand,
+            'cpu_speed_ghz' => $c->cpuSpeedGhz,
+            'nfc' => $c->nfc,
+            'fingerprint' => $c->fingerprint,
+            'ir' => $c->ir,
+            'water_resistant' => $c->waterResistant,
+            'sim_count' => $c->simCount,
         ];
     }
 

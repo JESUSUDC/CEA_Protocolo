@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Application\Cellphone\Port\Out;
+namespace App\Application\Cellphone\Port\Out;
 
-use Domain\Cellphone\Entity\Cellphone;
+use App\Domain\Cellphone\Entity\Cellphone;
 
 interface CellphoneRepositoryPort
 {

@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Application\Cellphone\Service;
+namespace App\Application\Cellphone\Service;
 
-use Application\Cellphone\Port\In\GetCellphoneByIdUseCase;
-use Application\Cellphone\Dto\Query\GetCellphoneByIdQuery;
-use Application\Cellphone\Response\CellphoneResponse;
-use Application\Cellphone\Mapper\CellphoneMapper;
-use Application\Cellphone\Port\Out\CellphoneRepositoryPort;
+use App\Application\Cellphone\Port\In\GetCellphoneByIdUseCase;
+use App\Application\Cellphone\Dto\Query\GetCellphoneByIdQuery;
+use App\Application\Cellphone\Response\CellphoneResponse;
+use App\Application\Cellphone\Mapper\CellphoneMapper;
+use App\Application\Cellphone\Port\Out\CellphoneRepositoryPort;
 
 final class GetCellphoneByIdService implements GetCellphoneByIdUseCase
 {

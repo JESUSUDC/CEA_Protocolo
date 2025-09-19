@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
-use Infrastructure\Adapters\Database\Eloquent\Model\UserModel;
+use App\Infrastructure\Adapters\Database\Eloquent\Model\UserModel;
 
 class UserSeeder extends Seeder
 {

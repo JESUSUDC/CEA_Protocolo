@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Application\Users\Service;
+namespace App\Application\Users\Service;
 
-use Application\Users\Port\In\LoginUseCase;
-use Application\Users\Port\Out\UserRepositoryPort as OutUserRepository;
-use Domain\Users\Service\Contracts\PasswordHasher;
-use Application\Security\JwtTokenIssuer;
+use App\Application\Users\Port\In\LoginUseCase;
+use App\Application\Users\Port\Out\UserRepositoryPort as OutUserRepository;
+use App\Domain\Users\Service\Contracts\PasswordHasher;
+use App\Application\Security\JwtTokenIssuer;
 
 final class LoginService implements LoginUseCase
 {

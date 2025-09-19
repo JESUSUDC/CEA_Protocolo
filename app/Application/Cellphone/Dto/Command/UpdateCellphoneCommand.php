@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Application\Cellphone\Dto\Command;
+namespace App\Application\Cellphone\Dto\Command;
 
 final class UpdateCellphoneCommand
 {

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Application\Users\Port\In;
+namespace App\Application\Users\Port\In;
 
 interface ResetPasswordUseCase
 {

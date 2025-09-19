@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
-use Infrastructure\Entrypoint\Rest\Middleware\JwtAuthMiddleware;
+use App\Infrastructure\Entrypoint\Rest\Middleware\JwtAuthMiddleware;
 
 class Kernel extends HttpKernel
 {

@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Domain\Users\Event;
+namespace App\Domain\Users\Event;
 
-use Domain\Users\ValueObject\UserId;
+use App\Domain\Users\ValueObject\UserId;
 
 final class UserRenamed
 {

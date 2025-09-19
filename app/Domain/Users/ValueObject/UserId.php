@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Domain\Users\ValueObject;
+namespace App\Domain\Users\ValueObject;
 
 final class UserId
 {

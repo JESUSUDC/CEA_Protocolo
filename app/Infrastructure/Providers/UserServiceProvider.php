@@ -1,18 +1,18 @@
 <?php
 declare(strict_types=1);
 
-namespace Infrastructure\Entrypoint\Rest\Providers;
+namespace App\Infrastructure\Entrypoint\Rest\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Infrastructure\Adapters\Database\Eloquent\Model\UserModel;
-use Infrastructure\Adapters\Database\Eloquent\Repository\EloquentUserRepositoryAdapter;
-use Infrastructure\Adapters\Security\Password\PasswordHasherAdapter;
-use Infrastructure\Adapters\Security\Password\PasswordStrengthPolicyAdapter;
-use Infrastructure\Adapters\Security\Jwt\JwtTokenIssuerAdapter;
-use Application\Users\Port\Out\UserRepositoryPort;
-use Application\Users\Port\Out\PasswordHasherPort;
-use Application\Users\Port\Out\PasswordStrengthPolicyPort;
-use Application\Security\Port\Out\TokenIssuerPort;
+use App\Infrastructure\Adapters\Database\Eloquent\Model\UserModel;
+use App\Infrastructure\Adapters\Database\Eloquent\Repository\EloquentUserRepositoryAdapter;
+use App\Infrastructure\Adapters\Security\Password\PasswordHasherAdapter;
+use App\Infrastructure\Adapters\Security\Password\PasswordStrengthPolicyAdapter;
+use App\Infrastructure\Adapters\Security\Jwt\JwtTokenIssuerAdapter;
+use App\Application\Users\Port\Out\UserRepositoryPort;
+use App\Application\Users\Port\Out\PasswordHasherPort;
+use App\Application\Users\Port\Out\PasswordStrengthPolicyPort;
+use App\Application\Security\Port\Out\TokenIssuerPort;
 
 class UserServiceProvider extends ServiceProvider
 {

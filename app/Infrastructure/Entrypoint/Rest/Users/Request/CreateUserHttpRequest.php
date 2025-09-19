@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Infrastructure\Entrypoint\Rest\Users\Request;
+namespace App\Infrastructure\Entrypoint\Rest\Users\Request;
 
 use Illuminate\Foundation\Http\FormRequest;
 

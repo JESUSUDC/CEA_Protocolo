@@ -1,26 +1,34 @@
 <?php
 declare(strict_types=1);
 
-namespace Infrastructure\Entrypoint\Rest\Cellphones\Controller;
+namespace App\Infrastructure\Entrypoint\Rest\Cellphones\Controller;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
-use Infrastructure\Entrypoint\Rest\Cellphones\Request\CreateCellphoneRequest;
-use Infrastructure\Entrypoint\Rest\Cellphones\Request\UpdateCellphoneRequest;
-use Infrastructure\Entrypoint\Rest\Cellphones\Mapper\CellphoneHttpMapper;
-use Application\Cellphone\Port\In\RegisterCellphoneUseCase;
-use Application\Cellphone\Port\In\ListCellphonesUseCase;
-use Application\Cellphone\Port\In\GetCellphoneByIdUseCase;
-use Application\Cellphone\Port\In\UpdateCellphoneUseCase;
-use Application\Cellphone\Port\In\DeleteCellphoneUseCase;
-use Application\Cellphone\Dto\Command\DeleteCellphoneCommand;
-use Application\Cellphone\Dto\Query\GetCellphoneByIdQuery;
-use Application\Cellphone\Dto\Query\ListCellphonesQuery;
-use Infrastructure\Entrypoint\Rest\Common\ErrorHandler\ApiExceptionHandler;
+use Illuminate\Http\Response;
+use App\Infrastructure\Entrypoint\Rest\Cellphones\Request\CreateCellphoneRequest;
+use App\Infrastructure\Entrypoint\Rest\Cellphones\Request\UpdateCellphoneRequest;
+use App\Infrastructure\Entrypoint\Rest\Cellphones\Mapper\CellphoneHttpMapper;
+use App\Application\Cellphone\Port\In\RegisterCellphoneUseCase;
+use App\Application\Cellphone\Port\In\ListCellphonesUseCase;
+use App\Application\Cellphone\Port\In\GetCellphoneByIdUseCase;
+use App\Application\Cellphone\Port\In\UpdateCellphoneUseCase;
+use App\Application\Cellphone\Port\In\DeleteCellphoneUseCase;
+use App\Application\Cellphone\Dto\Command\DeleteCellphoneCommand;
+use App\Application\Cellphone\Dto\Query\GetCellphoneByIdQuery;
+use App\Application\Cellphone\Dto\Query\ListCellphonesQuery;
+use App\Infrastructure\Entrypoint\Rest\Common\ErrorHandler\ApiExceptionHandler;
 
 final class CellphoneController extends Controller
 {
-    public function __construct(
+    // Constructor vacío solo para pruebas
+    public function __construct() {}
+
+    public function index(): JsonResponse
+    {
+        return response()->json(['message' => 'Hola Mundo'], 200);
+    }
+    /*public function __construct(
         private RegisterCellphoneUseCase $registerUseCase,
         private ListCellphonesUseCase $listUseCase,
         private GetCellphoneByIdUseCase $getByIdUseCase,
@@ -93,5 +101,5 @@ final class CellphoneController extends Controller
         } catch (\Throwable $e) {
             return ApiExceptionHandler::handle($e);
         }
-    }
+    }*/
 }

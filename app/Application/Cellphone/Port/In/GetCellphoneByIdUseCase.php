@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Application\Cellphone\Port\In;
+namespace App\Application\Cellphone\Port\In;
 
-use Application\Cellphone\Dto\Query\GetCellphoneByIdQuery;
-use Application\Cellphone\Response\CellphoneResponse;
+use App\Application\Cellphone\Dto\Query\GetCellphoneByIdQuery;
+use App\Application\Cellphone\Response\CellphoneResponse;
 
 interface GetCellphoneByIdUseCase
 {

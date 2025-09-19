@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Application\Users\Service;
+namespace App\Application\Users\Service;
 
-use Application\Users\Port\In\DeleteUserUseCase;
-use Application\Users\Dto\Command\DeleteUserCommand;
-use Application\Users\Port\Out\UserRepositoryPort as OutUserRepository;
-use Application\Port\Out\UnitOfWork;
-use Domain\Users\ValueObject\UserId;
+use App\Application\Users\Port\In\DeleteUserUseCase;
+use App\Application\Users\Dto\Command\DeleteUserCommand;
+use App\Application\Users\Port\Out\UserRepositoryPort as OutUserRepository;
+use App\Application\Users\Port\Out\UnitOfWorkPort as UnitOfWork;
+use App\Domain\Users\ValueObject\UserId;
 
 final class DeleteUserService implements DeleteUserUseCase
 {

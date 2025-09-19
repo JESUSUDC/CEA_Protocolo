@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Application\Users\Response;
+namespace App\Application\Users\Response;
 
 final class UserListResponse
 {

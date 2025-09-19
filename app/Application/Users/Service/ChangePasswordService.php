@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace Application\Users\Service;
+namespace App\Application\Users\Service;
 
-use Application\Users\Port\In\ChangePasswordUseCase;
-use Application\Users\Dto\Command\ChangePasswordCommand;
-use Application\Users\Port\Out\UserRepositoryPort as OutUserRepository;
-use Application\Port\Out\UnitOfWork;
-use Domain\Users\ValueObject\UserId;
-use Domain\Users\Service\Contracts\PasswordHasher;
-use Domain\Users\Service\Contracts\PasswordStrengthEvaluator;
+use App\Application\Users\Port\In\ChangePasswordUseCase;
+use App\Application\Users\Dto\Command\ChangePasswordCommand;
+use App\Application\Users\Port\Out\UserRepositoryPort as OutUserRepository;
+use App\Application\Port\Out\UnitOfWork;
+use App\Domain\Users\ValueObject\UserId;
+use App\Domain\Users\Service\Contracts\PasswordHasher;
+use App\Domain\Users\Service\Contracts\PasswordStrengthEvaluator;
 
 final class ChangePasswordService implements ChangePasswordUseCase
 {

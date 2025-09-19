@@ -1,16 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace Infrastructure\Entrypoint\Rest\Middleware;
+namespace App\Infrastructure\Entrypoint\Rest\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Application\Security\TokenIssuerPort;
+use App\Application\Security\JwtTokenIssuer;
 
 final class JwtAuthMiddleware
 {
-    public function __construct(private TokenIssuerPort $tokenIssuer)
+    public function __construct(private JwtTokenIssuer $tokenIssuer)
     {
     }
 
@@ -33,7 +33,7 @@ final class JwtAuthMiddleware
         // Validate signature/expiration via TokenIssuerPort
         $valid = false;
         try {
-            $valid = $this->tokenIssuer->validate($token);
+            $valid = $this->tokenIssuer->verify($token);
         } catch (\Throwable $e) {
             // don't reveal internal errors: return 401
             return response()->json(['message' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);

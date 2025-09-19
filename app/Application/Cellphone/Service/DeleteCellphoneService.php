@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Application\Cellphone\Service;
+namespace App\Application\Cellphone\Service;
 
-use Application\Cellphone\Port\In\DeleteCellphoneUseCase;
-use Application\Cellphone\Dto\Command\DeleteCellphoneCommand;
-use Application\Cellphone\Port\Out\CellphoneRepositoryPort;
-use Application\Port\Out\UnitOfWorkPort;
-use Domain\Cellphone\ValueObject\CellphoneId;
+use App\Application\Cellphone\Port\In\DeleteCellphoneUseCase;
+use App\Application\Cellphone\Dto\Command\DeleteCellphoneCommand;
+use App\Application\Cellphone\Port\Out\CellphoneRepositoryPort;
+use App\Application\Users\Port\Out\UnitOfWorkPort;
+use App\Domain\Cellphone\ValueObject\CellphoneId;
 
 final class DeleteCellphoneService implements DeleteCellphoneUseCase
 {

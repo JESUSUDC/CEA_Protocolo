@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\Users\Port\Out;
+namespace App\Application\Users\Port\Out;
 
 interface UnitOfWorkPort
 {

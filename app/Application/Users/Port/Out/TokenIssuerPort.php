@@ -1,8 +1,8 @@
 <?php
 
-namespace Application\Security\Port\Out;
+namespace App\Application\Security\Port\Out;
 
-use Domain\Users\Entity\User;
+use App\Domain\Users\Entity\User;
 
 interface TokenIssuerPort
 {

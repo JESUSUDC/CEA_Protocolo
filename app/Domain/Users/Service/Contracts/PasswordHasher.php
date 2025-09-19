@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Domain\Users\Service\Contracts;
+namespace App\Domain\Users\Service\Contracts;
 
-use Domain\Users\ValueObject\PasswordHash;
+use App\Domain\Users\ValueObject\PasswordHash;
 
 interface PasswordHasher
 {

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Infrastructure\Entrypoint\Rest\Cellphones\Request;
+namespace App\Infrastructure\Entrypoint\Rest\Cellphones\Request;
 
 use Illuminate\Foundation\Http\FormRequest;
 

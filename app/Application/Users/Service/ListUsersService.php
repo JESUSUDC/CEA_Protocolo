@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Application\Users\Service;
+namespace App\Application\Users\Service;
 
-use Application\Users\Port\In\ListUsersUseCase;
-use Application\Users\Dto\Query\ListUserQuery;
-use Application\Users\Response\UserListResponse;
-use Application\Users\Mapper\UserMapper;
-use Application\Users\Port\Out\UserRepositoryPort as OutUserRepository;
+use App\Application\Users\Port\In\ListUsersUseCase;
+use App\Application\Users\Dto\Query\ListUserQuery;
+use App\Application\Users\Response\UserListResponse;
+use App\Application\Users\Mapper\UserMapper;
+use App\Application\Users\Port\Out\UserRepositoryPort as OutUserRepository;
 
 final class ListUsersService implements ListUsersUseCase
 {

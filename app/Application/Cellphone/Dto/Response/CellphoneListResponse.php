@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Application\Cellphone\Response;
+namespace App\Application\Cellphone\Response;
 
 final class CellphoneListResponse
 {

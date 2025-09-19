@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Domain\Cellphone\Event;
+namespace App\Domain\Cellphone\Event;
 
-use Domain\Cellphone\ValueObject\CellphoneId;
+use App\Domain\Cellphone\ValueObject\CellphoneId;
 
 final class CellphoneSpecificationsUpdated
 {

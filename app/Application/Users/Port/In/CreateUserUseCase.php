@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Application\Users\Port\In;
+namespace App\Application\Users\Port\In;
 
-use Application\Users\Dto\Command\CreateUserCommand;
+use App\Application\Users\Dto\Command\CreateUserCommand;
 
 interface CreateUserUseCase
 {
