@@ -5,7 +5,7 @@ namespace Application\Users\Service;
 
 use Application\Users\Port\In\ChangePasswordUseCase;
 use Application\Users\Dto\Command\ChangePasswordCommand;
-use Application\Users\Port\Out\UserRepository as OutUserRepository;
+use Application\Users\Port\Out\UserRepositoryPort as OutUserRepository;
 use Application\Port\Out\UnitOfWork;
 use Domain\Users\ValueObject\UserId;
 use Domain\Users\Service\Contracts\PasswordHasher;

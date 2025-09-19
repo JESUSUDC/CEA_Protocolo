@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Application\Users\Service;
 
 use Application\Users\Port\In\LoginUseCase;
-use Application\Users\Port\Out\UserRepository as OutUserRepository;
+use Application\Users\Port\Out\UserRepositoryPort as OutUserRepository;
 use Domain\Users\Service\Contracts\PasswordHasher;
 use Application\Security\JwtTokenIssuer;
 

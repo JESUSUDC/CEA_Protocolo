@@ -7,7 +7,7 @@ use Application\Users\Port\In\GetUserByIdUseCase;
 use Application\Users\Dto\Query\GetUserByIdQuery;
 use Application\Users\Response\UserResponse;
 use Application\Users\Mapper\UserMapper;
-use Application\Users\Port\Out\UserRepository as OutUserRepository;
+use Application\Users\Port\Out\UserRepositoryPort as OutUserRepository;
 use Domain\Users\ValueObject\UserId;
 
 final class GetUserByIdService implements GetUserByIdUseCase

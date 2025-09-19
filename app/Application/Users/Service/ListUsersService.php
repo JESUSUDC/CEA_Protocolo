@@ -7,7 +7,7 @@ use Application\Users\Port\In\ListUsersUseCase;
 use Application\Users\Dto\Query\ListUserQuery;
 use Application\Users\Response\UserListResponse;
 use Application\Users\Mapper\UserMapper;
-use Application\Users\Port\Out\UserRepository as OutUserRepository;
+use Application\Users\Port\Out\UserRepositoryPort as OutUserRepository;
 
 final class ListUsersService implements ListUsersUseCase
 {

@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace Application\Users\Service;
 
 use Application\Users\Port\In\RequestPasswordUseCase;
-use Application\Port\Out\UserRepository as OutUserRepository;
+use Application\Port\Out\UserRepositoryPort as OutUserRepository;
 
 final class RequestPasswordService implements RequestPasswordUseCase
 {

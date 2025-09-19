@@ -5,7 +5,7 @@ namespace Application\Users\Service;
 
 use Application\Users\Port\In\DeleteUserUseCase;
 use Application\Users\Dto\Command\DeleteUserCommand;
-use Application\Users\Port\Out\UserRepository as OutUserRepository;
+use Application\Users\Port\Out\UserRepositoryPort as OutUserRepository;
 use Application\Port\Out\UnitOfWork;
 use Domain\Users\ValueObject\UserId;
 
