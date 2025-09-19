@@ -1,0 +1,33 @@
+<?php
+declare(strict_types=1);
+
+namespace Infrastructure\Entrypoint\Rest\Providers;
+
+use Illuminate\Support\ServiceProvider;
+use Infrastructure\Adapters\Database\Eloquent\Model\Cellphone as CellphoneModel;
+use Infrastructure\Adapters\Database\Eloquent\Repository\EloquentCellphoneRepositoryAdapter;
+use Infrastructure\Entrypoint\Rest\Cellphones\Mapper\CellphoneHttpMapper;
+use Infrastructure\Adapters\Database\Eloquent\UnitOfWork\LaravelUnitOfWorkAdapter;
+use Infrastructure\Adapters\Security\Password\PasswordHasherAdapter; // if needed
+
+class CellphoneServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        $this->app->singleton(CellphoneModel::class, function ($app) {
+            return new CellphoneModel();
+        });
+
+        $this->app->bind(\Application\Port\Out\CellphoneRepository::class, function ($app) {
+            return new EloquentCellphoneRepositoryAdapter($app->make(CellphoneModel::class));
+        });
+
+        $this->app->singleton(\Application\Port\Out\UnitOfWork::class, function () {
+            return new LaravelUnitOfWorkAdapter();
+        });
+
+        $this->app->singleton(CellphoneHttpMapper::class, function () {
+            return new CellphoneHttpMapper();
+        });
+    }
+}
