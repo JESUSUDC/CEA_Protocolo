@@ -14,10 +14,7 @@ use App\Domain\Users\ValueObject\PasswordHash;
 
 final class EloquentUserRepositoryAdapter implements UserRepositoryPort
 {
-    public function __construct(private UserModel $model)
-    {
-    }
-
+    
     public function save(User $user): void
     {
         $m = UserModel::find($user->id()->toString()) ?? new UserModel();

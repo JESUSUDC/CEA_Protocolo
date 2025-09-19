@@ -31,16 +31,20 @@ use App\Application\Users\Port\Out\PasswordHasherPort;
 use App\Application\Users\Port\Out\PasswordStrengthPolicyPort;
 use App\Application\Users\Port\Out\UnitOfWorkPort; // if you used UnitOfWorkPort
 use App\Application\Security\Port\Out\TokenIssuerPort;
-use App\Application\Users\Mapper\UserMapper as MapperUserMapper;
-/* Additional helpers */
-use Application\Users\Mapper\UserMapper;
+use App\Application\Users\Mapper\UserMapper;
+use App\Infrastructure\Adapters\Database\Eloquent\Model\UserModel;
+use App\Infrastructure\Adapters\Database\Eloquent\Repository\EloquentUserRepositoryAdapter;
+use App\Infrastructure\Adapters\Database\Eloquent\UnitOfWork\LaravelUnitOfWorkAdapter;
+use App\Infrastructure\Adapters\Security\Password\PasswordHasherAdapter;
+use App\Infrastructure\Adapters\Security\Password\PasswordStrengthPolicyAdapter;
+use Infrastructure\Adapters\Security\Jwt\JwtTokenIssuerAdapter;
 
-final class ApplicationBindingsServiceProvider extends ServiceProvider
+final class UserBindingsServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
         // Mapper
-        $this->app->singleton(MapperUserMapper::class, fn() => new MapperUserMapper());
+        $this->app->singleton(UserMapper::class, fn() => new UserMapper());
 
         /*
          * Bind UseCase interfaces to concrete services.
@@ -52,6 +56,26 @@ final class ApplicationBindingsServiceProvider extends ServiceProvider
          *  - UnitOfWorkPort (LaravelUnitOfWorkAdapter) if used
          *  - TokenIssuerPort (JwtTokenIssuerAdapter)
          */
+
+        $this->app->singleton(UserModel::class, fn() => new UserModel());
+
+        $this->app->bind(UserRepositoryPort::class, function($app) {
+            return new EloquentUserRepositoryAdapter($app->make(UserModel::class));
+        });
+
+        $this->app->singleton(PasswordHasherPort::class, fn() => new PasswordHasherAdapter());
+        $this->app->singleton(PasswordStrengthPolicyPort::class, fn() => new PasswordStrengthPolicyAdapter());
+
+        // JWT secret from env
+        $this->app->singleton(TokenIssuerPort::class, fn() => new JwtTokenIssuerAdapter(
+            config('app.jwt_secret') ?? env('JWT_SECRET', 'changeme'),
+            (int)(env('JWT_TTL', 3600))
+        ));
+
+        $this->app->singleton(UnitOfWorkPort::class, function ($app) {
+            return new LaravelUnitOfWorkAdapter();
+        });
+
         $this->app->bind(CreateUserUseCase::class, function ($app) {
             return new CreateUserService(
                 $app->make(UserRepositoryPort::class),
@@ -72,14 +96,14 @@ final class ApplicationBindingsServiceProvider extends ServiceProvider
         $this->app->bind(GetUserByIdUseCase::class, function ($app) {
             return new GetUserByIdService(
                 $app->make(UserRepositoryPort::class),
-                $app->make(MapperUserMapper::class)
+                $app->make(UserMapper::class)
             );
         });
 
         $this->app->bind(ListUsersUseCase::class, function ($app) {
             return new ListUsersService(
                 $app->make(UserRepositoryPort::class),
-                $app->make(MapperUserMapper::class)
+                $app->make(UserMapper::class)
             );
         });
 
@@ -110,5 +134,10 @@ final class ApplicationBindingsServiceProvider extends ServiceProvider
             return new LogoutService();
             // If you have a token blacklist repository, inject it here.
         });
+    }
+
+    public function boot(): void
+    {
+        //
     }
 }

@@ -9,4 +9,5 @@ use App\Application\Cellphone\Response\CellphoneListResponse;
 interface ListCellphonesUseCase
 {
     public function execute(ListCellphonesQuery $query): CellphoneListResponse;
+    //public function Hola(string $query) : string;
 }

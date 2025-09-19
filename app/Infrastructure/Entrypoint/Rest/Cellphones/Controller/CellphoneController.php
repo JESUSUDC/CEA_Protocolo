@@ -21,23 +21,16 @@ use App\Infrastructure\Entrypoint\Rest\Common\ErrorHandler\ApiExceptionHandler;
 
 final class CellphoneController extends Controller
 {
-    // Constructor vacío solo para pruebas
-    public function __construct() {}
-
-    public function index(): JsonResponse
-    {
-        return response()->json(['message' => 'Hola Mundo'], 200);
-    }
-    /*public function __construct(
-        private RegisterCellphoneUseCase $registerUseCase,
+    public function __construct(
+        //private RegisterCellphoneUseCase $registerUseCase,
         private ListCellphonesUseCase $listUseCase,
-        private GetCellphoneByIdUseCase $getByIdUseCase,
+        /*private GetCellphoneByIdUseCase $getByIdUseCase,
         private UpdateCellphoneUseCase $updateUseCase,
-        private DeleteCellphoneUseCase $deleteUseCase,
+        private DeleteCellphoneUseCase $deleteUseCase,*/
         private CellphoneHttpMapper $mapper
     ) {}
 
-    public function store(CreateCellphoneRequest $request): JsonResponse
+    /*public function store(CreateCellphoneRequest $request): JsonResponse
     {
         try {
             $command = $this->mapper->toRegisterCommand($request->validated());
@@ -60,7 +53,7 @@ final class CellphoneController extends Controller
         } catch (\Throwable $e) {
             return ApiExceptionHandler::handle($e);
         }
-    }
+    }*/
 
     public function index(): JsonResponse
     {
@@ -82,7 +75,7 @@ final class CellphoneController extends Controller
         }
     }
 
-    public function update(UpdateCellphoneRequest $request, string $id): JsonResponse
+    /*public function update(UpdateCellphoneRequest $request, string $id): JsonResponse
     {
         try {
             $command = $this->mapper->toUpdateCommand($request->validated(), $id);

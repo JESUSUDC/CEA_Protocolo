@@ -25,7 +25,6 @@ use App\Application\Cellphone\Port\Out\CellphoneRepositoryPort;
 
 final class EloquentCellphoneRepositoryAdapter implements CellphoneRepositoryPort
 {
-    public function __construct(private CellphoneModel $model) {}
 
     public function save(CellphoneEntity $cellphone): void
     {

@@ -9,7 +9,7 @@ use App\Application\Cellphone\Response\CellphoneListResponse;
 use App\Application\Cellphone\Mapper\CellphoneMapper;
 use App\Application\Cellphone\Port\Out\CellphoneRepositoryPort;
 
-final class ListCellphonesService implements ListCellphonesUseCase
+final class ListCellphoneService implements ListCellphonesUseCase
 {
     public function __construct(
         private CellphoneRepositoryPort $repo,
@@ -22,4 +22,9 @@ final class ListCellphonesService implements ListCellphonesUseCase
         $items = $this->mapper->toResponses($cells);
         return new CellphoneListResponse($items, count($items));
     }
+
+    /*public function Hola(string $query) : string
+    {
+        return "Hola ".$query;
+    }*/
 }
