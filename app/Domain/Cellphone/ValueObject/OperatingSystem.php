@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Domain\Cellphone\ValueObject;
 
-final class CellphoneId
+final class OperatingSystem
 {
     private string $value;
 
@@ -11,14 +11,14 @@ final class CellphoneId
     {
         $value = trim($value);
         if ($value === '') {
-            throw new \InvalidArgumentException('CellphoneId cannot be empty.');
+            throw new \InvalidArgumentException('Operating system cannot be empty.');
         }
         $this->value = $value;
     }
 
-    public static function fromString(string $id): self
+    public static function fromString(string $os): self
     {
-        return new self($id);
+        return new self($os);
     }
 
     public function toString(): string
@@ -26,7 +26,7 @@ final class CellphoneId
         return $this->value;
     }
 
-    public function equals(self $other): bool
+    public function equals(OperatingSystem $other): bool
     {
         return $this->value === $other->value;
     }
