@@ -123,10 +123,5 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
-    'providers' => [
-        Infrastructure\Entrypoint\Rest\Providers\ApplicationBindingsServiceProvider::class,
-        Infrastructure\Entrypoint\Rest\Providers\UserServiceProvider::class,
-        Infrastructure\Entrypoint\Rest\Providers\CellphoneServiceProvider::class,
-        Infrastructure\Entrypoint\Rest\Providers\AuthServiceProvider::class,
-    ]
+    
 ];
