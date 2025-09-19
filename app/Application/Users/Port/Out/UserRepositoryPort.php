@@ -10,6 +10,8 @@ interface UserRepositoryPort
 
     public function findById(string $id): ?User;
 
+    public function findByUsername(string $username): ?User;
+    
     public function findByEmail(string $email): ?User;
 
     public function delete(User $user): void;

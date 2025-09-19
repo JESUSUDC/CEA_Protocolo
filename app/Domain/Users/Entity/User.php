@@ -139,4 +139,16 @@ final class User extends AggregateRoot
     {
         return $hasher->verify($plain, $this->password);
     }
+
+    public static function reconstitute(
+        UserId $id,
+        UserName $name,
+        Role $role,
+        Email $email,
+        UserName $username,
+        PasswordHash $password,
+        bool $active
+    ): self {
+        return new self($id, $name, $role, $email, $username, $password, $active);
+    }
 }

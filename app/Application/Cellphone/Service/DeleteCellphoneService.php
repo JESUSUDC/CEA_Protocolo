@@ -24,7 +24,7 @@ final class DeleteCellphoneService implements DeleteCellphoneUseCase
             if ($cell === null) {
                 throw new \RuntimeException('Cellphone not found');
             }
-            $this->repo->remove($cell);
+            $this->repo->delete($cell->id()->toString());
             $this->uow->commit();
         } catch (\Throwable $e) {
             $this->uow->rollback();

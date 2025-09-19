@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Infrastructure\Entrypoint\Rest\Providers;
+namespace App\Infrastructure\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Infrastructure\Adapters\Database\Eloquent\Model\CellphoneModel;

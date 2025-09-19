@@ -18,7 +18,7 @@ final class ListUsersService implements ListUsersUseCase
 
     public function execute(ListUserQuery $query): UserListResponse
     {
-        $users = $this->userRepository->listAll($query->limit, $query->offset);
+        $users = $this->userRepository->findAll($query->limit, $query->offset);
         $items = $this->mapper->toResponses($users);
         // repository could provide count; for now use count(items)
         return new UserListResponse($items, count($items));

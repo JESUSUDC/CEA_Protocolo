@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Infrastructure\Entrypoint\Rest\Providers;
+namespace App\Infrastructure\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -31,7 +31,7 @@ use App\Application\Users\Port\Out\PasswordHasherPort;
 use App\Application\Users\Port\Out\PasswordStrengthPolicyPort;
 use App\Application\Users\Port\Out\UnitOfWorkPort; // if you used UnitOfWorkPort
 use App\Application\Security\Port\Out\TokenIssuerPort;
-
+use App\Application\Users\Mapper\UserMapper as MapperUserMapper;
 /* Additional helpers */
 use Application\Users\Mapper\UserMapper;
 
@@ -40,7 +40,7 @@ final class ApplicationBindingsServiceProvider extends ServiceProvider
     public function register(): void
     {
         // Mapper
-        $this->app->singleton(UserMapper::class, fn() => new UserMapper());
+        $this->app->singleton(MapperUserMapper::class, fn() => new MapperUserMapper());
 
         /*
          * Bind UseCase interfaces to concrete services.
@@ -72,14 +72,14 @@ final class ApplicationBindingsServiceProvider extends ServiceProvider
         $this->app->bind(GetUserByIdUseCase::class, function ($app) {
             return new GetUserByIdService(
                 $app->make(UserRepositoryPort::class),
-                $app->make(UserMapper::class)
+                $app->make(MapperUserMapper::class)
             );
         });
 
         $this->app->bind(ListUsersUseCase::class, function ($app) {
             return new ListUsersService(
                 $app->make(UserRepositoryPort::class),
-                $app->make(UserMapper::class)
+                $app->make(MapperUserMapper::class)
             );
         });
 

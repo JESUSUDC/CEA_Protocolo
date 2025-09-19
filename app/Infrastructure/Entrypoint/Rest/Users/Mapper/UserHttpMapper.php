@@ -3,11 +3,12 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Entrypoint\Rest\Users\Mapper;
 
+use App\Application\Users\Dto\Command\CreateUserCommand as CommandCreateUserCommand;
 use Illuminate\Support\Str;
-use Application\Users\Dto\Command\CreateUserCommand;
-use Application\Users\Dto\Command\UpdateUserCommand;
-use Application\Users\Response\UserResponse;
-use Domain\Users\ValueObject\Role;
+use App\Application\Users\Dto\Command\CreateUserCommand;
+use App\Application\Users\Dto\Command\UpdateUserCommand;
+use App\Application\Users\Response\UserResponse;
+use App\Domain\Users\ValueObject\Role;
 
 final class UserHttpMapper
 {
@@ -17,7 +18,7 @@ final class UserHttpMapper
      * @param array $dto validated request data
      * @return CreateUserCommand
      */
-    public function toCreateCommand(array $dto): CreateUserCommand
+    public function toCreateCommand(array $dto): CommandCreateUserCommand
     {
         $id = $dto['id'] ?? Str::uuid()->toString();
         $role = $dto['role'] ?? 'user';

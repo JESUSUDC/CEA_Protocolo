@@ -7,7 +7,7 @@ use App\Application\Users\Port\Out\PasswordHasherPort;
 
 final class PasswordHasherAdapter implements PasswordHasherPort
 {
-    private int $algo;
+    private string $algo;
     private array $options;
 
     public function __construct(array $options = ['cost' => 12])

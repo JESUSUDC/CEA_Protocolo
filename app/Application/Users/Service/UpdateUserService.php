@@ -21,7 +21,8 @@ final class UpdateUserService implements UpdateUserUseCase
 
     public function execute(UpdateUserCommand $command): void
     {
-        $this->uow->transactional(function() use ($command) {
+        $this->uow->begin();
+        try {
             $user = $this->userRepository->findById($command->userId);
             if ($user === null) {
                 throw new \RuntimeException('User not found');
@@ -37,10 +38,14 @@ final class UpdateUserService implements UpdateUserUseCase
                 $user->changeEmail(Email::fromString($command->email));
             }
             if ($command->username !== null) {
-                $user->rename(UserName::fromString($command->username)); // we used rename for username too; consider separate VO if needed
+                $user->rename(UserName::fromString($command->username)); // considera usar VO separado para username
             }
 
             $this->userRepository->save($user);
-        });
+            $this->uow->commit();
+        } catch (\Throwable $e) {
+            $this->uow->rollback();
+            throw $e;
+        }
     }
 }

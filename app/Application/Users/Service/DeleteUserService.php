@@ -18,12 +18,18 @@ final class DeleteUserService implements DeleteUserUseCase
 
     public function execute(DeleteUserCommand $command): void
     {
-        $this->uow->transactional(function() use ($command) {
-            $user = $this->userRepository->findById(UserId::fromString($command->userId));
+        $this->uow->begin();
+        try {
+            $user = $this->userRepository->findById($command->userId);
             if ($user === null) {
                 throw new \RuntimeException('User not found');
             }
-            $this->userRepository->remove($user);
-        });
+
+            $this->userRepository->delete($user); // o $user->id() si tu repo espera string
+            $this->uow->commit();
+        } catch (\Throwable $e) {
+            $this->uow->rollback();
+            throw $e;
+        }
     }
 }

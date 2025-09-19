@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Adapters\Database\Eloquent\Repository;
 
-use App\Infrastructure\Adapters\Database\Eloquent\Model\Cellphone as CellphoneModel;
+use App\Infrastructure\Adapters\Database\Eloquent\Model\CellphoneModel;
+use App\Domain\Cellphone\Entity\Cellphone as CellphoneEntity;
 use App\Domain\Cellphone\ValueObject\CellphoneId;
 use App\Domain\Cellphone\ValueObject\Brand;
 use App\Domain\Cellphone\ValueObject\Imei;
@@ -19,36 +20,37 @@ use App\Domain\Cellphone\ValueObject\Cameras;
 use App\Domain\Cellphone\ValueObject\Cpu;
 use App\Domain\Cellphone\ValueObject\BooleanFeature;
 use App\Domain\Cellphone\ValueObject\SimCount;
-use App\Domain\Cellphone\Entity\Cellphone as CellphoneEntity;
-use Illuminate\Support\Collection;
 use Carbon\Carbon;
-
-// NOTE: adapt the implemented interface name to your project
-use Application\Cellphone\Port\Out\CellphoneRepositoryPort;
+use App\Application\Cellphone\Port\Out\CellphoneRepositoryPort;
 
 final class EloquentCellphoneRepositoryAdapter implements CellphoneRepositoryPort
 {
-    public function __construct(private CellphoneModel $model)
-    {
-    }
+    public function __construct(private CellphoneModel $model) {}
 
     public function save(CellphoneEntity $cellphone): void
     {
         $m = $this->toModel($cellphone);
-        // upsert (update or create)
-        /** @var CellphoneModel $existing */
-        $existing = CellphoneModel::find($cellphone->id()->toString());
-        if ($existing) {
-            $existing->fill($m->toArray());
-            $existing->save();
-        } else {
-            $m->save();
-        }
+        $m->save();
     }
 
-    public function findById(CellphoneId $id): ?CellphoneEntity
+    public function update(CellphoneEntity $cellphone): void
     {
-        $m = CellphoneModel::find($id->toString());
+        $existing = CellphoneModel::find($cellphone->id()->toString());
+        if (!$existing) {
+            throw new \RuntimeException('Cellphone not found for update.');
+        }
+        $existing->fill($this->toModel($cellphone)->toArray());
+        $existing->save();
+    }
+
+    public function delete(string $id): void
+    {
+        CellphoneModel::destroy($id);
+    }
+
+    public function findById(string $id): ?CellphoneEntity
+    {
+        $m = CellphoneModel::find($id);
         if (!$m) {
             return null;
         }
@@ -66,11 +68,6 @@ final class EloquentCellphoneRepositoryAdapter implements CellphoneRepositoryPor
         return $models->map(fn($m) => $this->toDomain($m))->all();
     }
 
-    public function delete(CellphoneEntity $cellphone): void
-    {
-        CellphoneModel::destroy($cellphone->id()->toString());
-    }
-
     private function toModel(CellphoneEntity $cellphone): CellphoneModel
     {
         $m = new CellphoneModel();
@@ -81,7 +78,7 @@ final class EloquentCellphoneRepositoryAdapter implements CellphoneRepositoryPor
         $m->megapixels = $cellphone->megapixels()->toFloat();
         $m->ram_mb = $cellphone->ram()->toMegabytes();
         $m->storage_primary_mb = $cellphone->primaryStorage()->toMegabytes();
-        $m->storage_secondary_mb = $cellphone->secondaryStorage() ? $cellphone->secondaryStorage()->toMegabytes() : null;
+        $m->storage_secondary_mb = $cellphone->secondaryStorage()?->toMegabytes();
         $m->operating_system = $cellphone->os()->toString();
         $m->operator = $cellphone->operator()?->toString();
         $m->network_technology = $cellphone->networkTechnology()->toString();
@@ -101,7 +98,6 @@ final class EloquentCellphoneRepositoryAdapter implements CellphoneRepositoryPor
 
     private function toDomain(CellphoneModel $m): CellphoneEntity
     {
-        // map Eloquent model -> Domain VO and Entity via register factory
         return CellphoneEntity::register(
             CellphoneId::fromString($m->id),
             Brand::fromString($m->brand),

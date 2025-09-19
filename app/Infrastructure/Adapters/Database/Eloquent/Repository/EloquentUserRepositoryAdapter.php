@@ -38,6 +38,13 @@ final class EloquentUserRepositoryAdapter implements UserRepositoryPort
         return $this->toDomain($m);
     }
 
+    public function findByUsername(string $username): ?User
+    {
+        $m = UserModel::where('username', strtolower($username))->first();
+        if (!$m) return null;
+        return $this->toDomain($m);
+    }
+
     public function findByEmail(string $email): ?User
     {
         $m = UserModel::where('email', strtolower($email))->first();

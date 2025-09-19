@@ -2,8 +2,8 @@
 
 return [
     App\Providers\AppServiceProvider::class,
-    /*Infrastructure\Providers\ApplicationBindingsServiceProvider::class,
-    Infrastructure\Providers\UserServiceProvider::class,
-    Infrastructure\Providers\CellphoneServiceProvider::class,
-    Infrastructure\Providers\AuthServiceProvider::class,*/
+    App\Infrastructure\Providers\ApplicationBindingsServiceProvider::class,
+    App\Infrastructure\Providers\UserServiceProvider::class,
+    App\Infrastructure\Providers\CellphoneServiceProvider::class,
+    App\Infrastructure\Providers\AuthServiceProvider::class,
 ];

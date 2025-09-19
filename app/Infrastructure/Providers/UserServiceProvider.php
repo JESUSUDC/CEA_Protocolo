@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Infrastructure\Entrypoint\Rest\Providers;
+namespace App\Infrastructure\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Infrastructure\Adapters\Database\Eloquent\Model\UserModel;
@@ -13,6 +13,7 @@ use App\Application\Users\Port\Out\UserRepositoryPort;
 use App\Application\Users\Port\Out\PasswordHasherPort;
 use App\Application\Users\Port\Out\PasswordStrengthPolicyPort;
 use App\Application\Security\Port\Out\TokenIssuerPort;
+use Infrastructure\Adapters\Security\Jwt\JwtTokenIssuerAdapter as JwtJwtTokenIssuerAdapter;
 
 class UserServiceProvider extends ServiceProvider
 {
@@ -31,7 +32,7 @@ class UserServiceProvider extends ServiceProvider
         $this->app->singleton(TokenIssuerPort::class, function($app) {
             $secret = config('app.jwt_secret') ?? env('JWT_SECRET', 'changeme');
             $ttl = (int)(env('JWT_TTL', 3600));
-            return new JwtTokenIssuerAdapter($secret, $ttl);
+            return new JwtJwtTokenIssuerAdapter($secret, $ttl);
         });
     }
 }

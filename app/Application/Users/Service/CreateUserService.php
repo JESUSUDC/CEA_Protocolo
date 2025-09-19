@@ -52,10 +52,15 @@ final class CreateUserService implements CreateUserUseCase
             $passwordHash
         );
 
-        // Transactional save
-        $this->uow->transactional(function() use ($user) {
+        // Transactional save using begin/commit/rollback
+        $this->uow->begin();
+        try {
             $this->userRepository->save($user);
-        });
+            $this->uow->commit();
+        } catch (\Throwable $e) {
+            $this->uow->rollback();
+            throw $e;
+        }
 
         return $userId->toString();
     }

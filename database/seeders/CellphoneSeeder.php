@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
-use Infrastructure\Adapters\Database\Eloquent\Model\CellphoneModel;
+use App\Infrastructure\Adapters\Database\Eloquent\Model\CellphoneModel;
 
 class CellphoneSeeder extends Seeder
 {
