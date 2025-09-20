@@ -1,60 +1,142 @@
 {
   "info": {
-    "name": "API Cellphones",
-    "_postman_id": "cellphone-collection-001",
-    "description": "Colección de pruebas API Cellphones",
+    "name": "Cellphones API",
+    "description": "Colección para testing de endpoints de celulares",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "cellphone_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
   "item": [
     {
-      "name": "Registrar celular",
+      "name": "Register Cellphone",
       "request": {
         "method": "POST",
-        "header": [],
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"brand\": \"Samsung\",\n  \"imei\": \"123456789012345\",\n  \"screen_size\": 6.5,\n  \"megapixels\": 48,\n  \"ram_mb\": 8192,\n  \"storage_primary_mb\": 128000,\n  \"network_technology\": \"5G\",\n  \"camera_count\": 4,\n  \"cpu_brand\": \"Snapdragon\",\n  \"cpu_speed_ghz\": 2.8,\n  \"sim_count\": 2\n}",
-          "options": { "raw": { "language": "json" } }
+          "raw": "{\n  \"brand\": \"Samsung\",\n  \"imei\": \"123456789012345\",\n  \"screen_size\": 6.5,\n  \"megapixels\": 48.0,\n  \"ram_mb\": 8192,\n  \"storage_primary_mb\": 128000,\n  \"storage_secondary_mb\": 512000,\n  \"operating_system\": \"Android\",\n  \"operator\": \"Movistar\",\n  \"network_technology\": \"5G\",\n  \"wifi\": true,\n  \"bluetooth\": true,\n  \"camera_count\": 4,\n  \"cpu_brand\": \"Snapdragon\",\n  \"cpu_speed_ghz\": 2.8,\n  \"nfc\": true,\n  \"fingerprint\": true,\n  \"ir\": false,\n  \"water_resistant\": true,\n  \"sim_count\": 2\n}"
         },
-        "url": { "raw": "http://localhost:8000/api/v1/cellphones", "host": ["http://localhost:8000"], "path": ["api","v1","cellphones"] }
-      }
+        "url": {
+          "raw": "{{base_url}}/cellphones",
+          "host": ["{{base_url}}"],
+          "path": ["cellphones"]
+        }
+      },
+      "response": []
     },
     {
-      "name": "Listar celulares",
+      "name": "Get All Cellphones",
       "request": {
         "method": "GET",
-        "header": [],
-        "url": { "raw": "http://localhost:8000/api/v1/cellphones?limit=50&offset=0", "host": ["http://localhost:8000"], "path": ["api","v1","cellphones"] }
-      }
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/cellphones?limit=10&offset=0",
+          "host": ["{{base_url}}"],
+          "path": ["cellphones"],
+          "query": [
+            {
+              "key": "limit",
+              "value": "10"
+            },
+            {
+              "key": "offset",
+              "value": "0"
+            }
+          ]
+        }
+      },
+      "response": []
     },
     {
-      "name": "Obtener celular por ID",
+      "name": "Get Cellphone by ID",
       "request": {
         "method": "GET",
-        "header": [],
-        "url": { "raw": "http://localhost:8000/api/v1/cellphones/{{id}}", "host": ["http://localhost:8000"], "path": ["api","v1","cellphones","{{id}}"] }
-      }
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/cellphones/{{cellphone_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["cellphones", "{{cellphone_id}}"]
+        }
+      },
+      "response": []
     },
     {
-      "name": "Actualizar celular",
+      "name": "Update Cellphone",
       "request": {
         "method": "PUT",
-        "header": [],
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"brand\": \"Samsung Updated\",\n  \"screen_size\": 6.7\n}",
-          "options": { "raw": { "language": "json" } }
+          "raw": "{\n  \"brand\": \"Samsung Updated\",\n  \"imei\": \"987654321098765\",\n  \"screen_size\": 6.7,\n  \"megapixels\": 64.0,\n  \"ram_mb\": 12288,\n  \"storage_primary_mb\": 256000,\n  \"operating_system\": \"Android 13\",\n  \"network_technology\": \"5G+\",\n  \"camera_count\": 5,\n  \"cpu_brand\": \"Snapdragon 8 Gen 2\",\n  \"cpu_speed_ghz\": 3.2\n}"
         },
-        "url": { "raw": "http://localhost:8000/api/v1/cellphones/{{id}}", "host": ["http://localhost:8000"], "path": ["api","v1","cellphones","{{id}}"] }
-      }
+        "url": {
+          "raw": "{{base_url}}/cellphones/{{cellphone_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["cellphones", "{{cellphone_id}}"]
+        }
+      },
+      "response": []
     },
     {
-      "name": "Eliminar celular",
+      "name": "Delete Cellphone",
       "request": {
         "method": "DELETE",
-        "header": [],
-        "url": { "raw": "http://localhost:8000/api/v1/cellphones/{{id}}", "host": ["http://localhost:8000"], "path": ["api","v1","cellphones","{{id}}"] }
-      }
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/cellphones/{{cellphone_id}}",
+          "host": ["{{base_url}}"],
+          "path": ["cellphones", "{{cellphone_id}}"]
+        }
+      },
+      "response": []
     }
   ]
 }
