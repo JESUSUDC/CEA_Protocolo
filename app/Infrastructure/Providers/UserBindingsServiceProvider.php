@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 /* Ports In (use-cases) */
 use App\Application\Users\Port\In\CreateUserUseCase;
 use App\Application\Users\Port\In\LoginUseCase;
+use App\Application\Users\Port\In\RefreshTokenUseCase; // ✅ Nuevo use case
 use App\Application\Users\Port\In\GetUserByIdUseCase;
 use App\Application\Users\Port\In\ListUsersUseCase;
 use App\Application\Users\Port\In\UpdateUserUseCase;
@@ -18,6 +19,7 @@ use App\Application\Users\Port\In\LogoutUseCase;
 /* Services (implementations) */
 use App\Application\Users\Service\CreateUserService;
 use App\Application\Users\Service\LoginService;
+use App\Application\Users\Service\RefreshTokenService; // ✅ Nuevo servicio
 use App\Application\Users\Service\GetUserByIdService;
 use App\Application\Users\Service\ListUsersService;
 use App\Application\Users\Service\UpdateUserService;
@@ -29,15 +31,14 @@ use App\Application\Users\Service\LogoutService;
 use App\Application\Users\Port\Out\UserRepositoryPort;
 use App\Application\Users\Port\Out\PasswordHasherPort;
 use App\Application\Users\Port\Out\PasswordStrengthPolicyPort;
-use App\Application\Users\Port\Out\UnitOfWorkPort; // if you used UnitOfWorkPort
-use App\Application\Security\Port\Out\TokenIssuerPort;
+use App\Application\Users\Port\Out\UnitOfWorkPort;
 use App\Application\Users\Mapper\UserMapper;
-use App\Infrastructure\Adapters\Database\Eloquent\Model\UserModel;
+use App\Application\Users\Port\Out\TokenIssuerPort;
 use App\Infrastructure\Adapters\Database\Eloquent\Repository\EloquentUserRepositoryAdapter;
 use App\Infrastructure\Adapters\Database\Eloquent\UnitOfWork\LaravelUnitOfWorkAdapter;
+use App\Infrastructure\Adapters\Security\Jwt\JwtTokenIssuerAdapter;
 use App\Infrastructure\Adapters\Security\Password\PasswordHasherAdapter;
 use App\Infrastructure\Adapters\Security\Password\PasswordStrengthPolicyAdapter;
-use Infrastructure\Adapters\Security\Jwt\JwtTokenIssuerAdapter;
 
 final class UserBindingsServiceProvider extends ServiceProvider
 {
@@ -46,30 +47,24 @@ final class UserBindingsServiceProvider extends ServiceProvider
         // Mapper
         $this->app->singleton(UserMapper::class, fn() => new UserMapper());
 
-        /*
-         * Bind UseCase interfaces to concrete services.
-         * The container will resolve constructor arguments (ports out) from other providers.
-         * Make sure earlier you have bound:
-         *  - UserRepositoryPort (EloquentUserRepositoryAdapter)
-         *  - PasswordHasherPort (PasswordHasherAdapter)
-         *  - PasswordStrengthPolicyPort (PasswordStrengthPolicyAdapter)
-         *  - UnitOfWorkPort (LaravelUnitOfWorkAdapter) if used
-         *  - TokenIssuerPort (JwtTokenIssuerAdapter)
-         */
-
+        // Ports Out
         $this->app->bind(UserRepositoryPort::class, EloquentUserRepositoryAdapter::class);
-
         $this->app->singleton(PasswordHasherPort::class, fn() => new PasswordHasherAdapter());
         $this->app->singleton(PasswordStrengthPolicyPort::class, fn() => new PasswordStrengthPolicyAdapter());
-
-        // JWT secret from env
-        $this->app->singleton(TokenIssuerPort::class, fn() => new JwtTokenIssuerAdapter(
-            config('app.jwt_secret') ?? env('JWT_SECRET', 'changeme'),
-            (int)(env('JWT_TTL', 3600))
-        ));
-
         
+        // UnitOfWork
+        $this->app->bind(UnitOfWorkPort::class, LaravelUnitOfWorkAdapter::class);
+        
+        // Token Issuer - Actualizado para refresh token
+        $this->app->singleton(TokenIssuerPort::class, function () {
+            return new JwtTokenIssuerAdapter(
+                config('app.jwt_secret') ?? env('JWT_SECRET', 'changeme'),
+                (int)(env('JWT_ACCESS_TTL', 3600)),      // Access token TTL
+                (int)(env('JWT_REFRESH_TTL', 2592000))   // Refresh token TTL (30 días)
+            );
+        });
 
+        // Use Cases
         $this->app->bind(CreateUserUseCase::class, function ($app) {
             return new CreateUserService(
                 $app->make(UserRepositoryPort::class),
@@ -83,6 +78,14 @@ final class UserBindingsServiceProvider extends ServiceProvider
             return new LoginService(
                 $app->make(UserRepositoryPort::class),
                 $app->make(PasswordHasherPort::class),
+                $app->make(TokenIssuerPort::class)
+            );
+        });
+
+        // ✅ NUEVO: Refresh Token Use Case
+        $this->app->bind(RefreshTokenUseCase::class, function ($app) {
+            return new RefreshTokenService(
+                $app->make(UserRepositoryPort::class),
                 $app->make(TokenIssuerPort::class)
             );
         });
@@ -126,7 +129,6 @@ final class UserBindingsServiceProvider extends ServiceProvider
 
         $this->app->bind(LogoutUseCase::class, function ($app) {
             return new LogoutService();
-            // If you have a token blacklist repository, inject it here.
         });
     }
 

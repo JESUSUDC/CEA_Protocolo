@@ -8,5 +8,5 @@ interface LoginUseCase
     /**
      * Returns JWT token on success.
      */
-    public function execute(string $usernameOrEmail, string $password): string;
+    public function execute(string $usernameOrEmail, string $password): array;
 }

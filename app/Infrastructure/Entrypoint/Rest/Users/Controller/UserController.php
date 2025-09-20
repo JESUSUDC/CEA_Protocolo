@@ -22,6 +22,7 @@ use App\Application\Users\Dto\Command\DeleteUserCommand;
 use App\Application\Users\Dto\Query\GetUserByIdQuery;
 use App\Application\Users\Dto\Query\ListUserQuery;
 use App\Application\Users\Dto\Command\ChangePasswordCommand;
+use App\Application\Users\Port\In\RefreshTokenUseCase;
 use App\Infrastructure\Entrypoint\Rest\Common\ErrorHandler\ApiExceptionHandler;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
@@ -30,12 +31,13 @@ use Illuminate\Http\Request;
 final class UserController extends Controller
 {
     public function __construct(
-        //private CreateUserUseCase $createUser,
-        //private LoginUseCase $loginUseCase,
+        private CreateUserUseCase $createUser,
+        private LoginUseCase $loginUseCase,
+        private RefreshTokenUseCase $refreshTokenUseCase,
         private GetUserByIdUseCase $getByIdUseCase,
         private ListUsersUseCase $listUsersUseCase,
         //private UpdateUserUseCase $updateUserUseCase,
-        //private DeleteUserUseCase $deleteUserUseCase,
+        private DeleteUserUseCase $deleteUserUseCase,
         //private ChangePasswordUseCase $changePasswordUseCase,
         //private LogoutUseCase $logoutUseCase,
         private UserHttpMapper $mapper
@@ -43,39 +45,10 @@ final class UserController extends Controller
 
     
 
-    /*public function store(Request $request): JsonResponse
-    {
-        try {
-            Log::info('Creating user with data: ', $request->all());
-            //$command = $this->mapper->toCreateCommand($request->validated());
-            //$id = $this->createUser->execute($command);
-            //return response()->json(['id' => $id], 201);
-            return response()->json(['id' => "hola"], 201);
-        } catch (\Throwable $e) {
-            return ApiExceptionHandler::handle($e);
-        }
-    }*/
-    
     public function store(Request $request): JsonResponse
     {
         try {
             Log::info('Creating user with data: ', $request->all());
-            
-            // Crear manualmente todas las dependencias
-            $repo = app()->make(\App\Application\Users\Port\Out\UserRepositoryPort::class);
-            $hasher = app()->make(\App\Application\Users\Port\Out\PasswordHasherPort::class);
-            $strengthEvaluator = app()->make(\App\Application\Users\Port\Out\PasswordStrengthPolicyPort::class);
-            $uow = app()->make(\App\Application\Users\Port\Out\UnitOfWorkPort::class);
-            $mapper = app()->make(\App\Application\Users\Mapper\UserMapper::class);
-            
-            // Crear el servicio manualmente
-            $createUserService = new \App\Application\Users\Service\CreateUserService(
-                $repo,
-                $hasher,
-                $strengthEvaluator,
-                $uow
-            );
-            
             // Validar manualmente
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
@@ -99,7 +72,7 @@ final class UserController extends Controller
             );
             
             // Ejecutar el servicio
-            $userId = $createUserService->execute($command);
+            $userId = $this->createUser->execute($command);
             
             return response()->json(['id' => $userId], 201);
             
@@ -109,9 +82,12 @@ final class UserController extends Controller
         }
     }
 
-    /*public function login(LoginUserRequest $request): JsonResponse
+    
+    
+    /*public function login(Request $request): JsonResponse
     {
         try {
+            Log::info('Creating user with data: ', $request->all());
             $data = $request->validated();
             $token = $this->loginUseCase->execute($data['username_or_email'], $data['password']);
             return response()->json(['token' => $token], 200);
@@ -119,6 +95,74 @@ final class UserController extends Controller
             return ApiExceptionHandler::handle($e);
         }
     }*/
+
+    public function login(Request $request): JsonResponse
+    {
+        try {
+            Log::info('Login attempt with data: ', $request->all());
+            
+            $validated = $request->validate([
+                'username_or_email' => 'required|string',
+                'password' => 'required|string',
+            ]);
+
+            $tokens = $this->loginUseCase->execute(
+                $validated['username_or_email'], 
+                $validated['password']
+            );
+            
+            Log::info('Login successful for: ' . $validated['username_or_email']);
+            return response()->json($tokens, 200);
+            
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'error' => 'validation_error',
+                'message' => $e->errors()
+            ], 422);
+        } catch (\RuntimeException $e) {
+            // Captura específicamente errores de credenciales
+            Log::warning('Login failed: ' . $e->getMessage());
+            return response()->json([
+                'error' => 'authentication_error',
+                'message' => 'Invalid credentials'
+            ], 401);
+        } catch (\Throwable $e) {
+            Log::error('Login error: ' . $e->getMessage());
+            return ApiExceptionHandler::handle($e);
+        }
+    }
+
+    public function refresh(Request $request): JsonResponse
+    {
+        try {
+            Log::info('Refresh token attempt');
+            
+            $validated = $request->validate([
+                'refresh_token' => 'required|string',
+            ]);
+
+            $tokens = $this->refreshTokenUseCase->execute($validated['refresh_token']);
+            
+            Log::info('Refresh token successful');
+            return response()->json($tokens, 200);
+            
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'error' => 'validation_error',
+                'message' => $e->errors()
+            ], 422);
+        } catch (\RuntimeException $e) {
+            // ✅ Captura específica para tokens inválidos - retorna 401
+            Log::warning('Refresh token failed: ' . $e->getMessage());
+            return response()->json([
+                'error' => 'invalid_token',
+                'message' => $e->getMessage()
+            ], 401);
+        } catch (\Throwable $e) {
+            Log::error('Refresh token error: ' . $e->getMessage());
+            return ApiExceptionHandler::handle($e);
+        }
+    }
 
     public function show(string $id): JsonResponse
     {
@@ -158,11 +202,16 @@ final class UserController extends Controller
         } catch (\Throwable $e) {
             return ApiExceptionHandler::handle($e);
         }
-    }
+    }*/
 
     public function destroy(string $id): JsonResponse
     {
         try {
+            $query = new GetUserByIdQuery($id);
+            $userResp = $this->getByIdUseCase->execute($query);
+            if ($userResp === null) {
+                return response()->json(['message' => 'User not found'], 404);
+            }
             $this->deleteUserUseCase->execute(new DeleteUserCommand($id));
             return response()->json([], 204);
         } catch (\Throwable $e) {
@@ -170,7 +219,7 @@ final class UserController extends Controller
         }
     }
 
-    public function changePassword(ChangePasswordRequest $request, string $id): JsonResponse
+    /*public function changePassword(ChangePasswordRequest $request, string $id): JsonResponse
     {
         try {
             $payload = $request->validated();

@@ -17,6 +17,7 @@ Route::prefix('v1')->group(function () {
     // Public
     Route::post('/users', [UserController::class, 'store']); // register
     Route::post('/users/login', [UserController::class, 'login']); // login
+    Route::post('/users/refresh', [UserController::class, 'refresh']); // token refresh
 
     // Protected
     //Route::middleware(['auth:api'])->group(function () {

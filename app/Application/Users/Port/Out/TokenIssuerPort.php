@@ -1,12 +1,13 @@
 <?php
+declare(strict_types=1);
 
-namespace App\Application\Security\Port\Out;
-
-use App\Domain\Users\Entity\User;
+namespace App\Application\Users\Port\Out;
 
 interface TokenIssuerPort
 {
-    public function issue(User $user): string;
-
-    public function validate(string $token): bool;
+    public function issueAccessToken(array $claims): string;
+    public function issueRefreshToken(array $claims): string;
+    public function validateAccessToken(string $token): bool;
+    public function validateRefreshToken(string $token): bool;
+    public function getClaimsFromToken(string $token): array;
 }
