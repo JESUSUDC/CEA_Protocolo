@@ -7,61 +7,128 @@ use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\AuthenticationException;
-use App\Domain\Users\Exception\DomainException as UsersDomainException; // IMPORTANTE
+use Illuminate\Database\QueryException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Domain\Users\Exception\DomainException as UsersDomainException;
+use App\Domain\Users\Exception\InvalidPassword;
+use App\Domain\Cellphone\Exception\DomainException as CellphoneDomainException;
 
 final class ApiExceptionHandler
 {
+    private const ERROR_MAP = [
+        ValidationException::class => [
+            'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
+            'error' => 'validation_error',
+            'message' => 'Validation failed'
+        ],
+        AuthenticationException::class => [
+            'status' => Response::HTTP_UNAUTHORIZED,
+            'error' => 'unauthenticated',
+            'message' => 'Unauthenticated'
+        ],
+        ModelNotFoundException::class => [
+            'status' => Response::HTTP_NOT_FOUND,
+            'error' => 'not_found',
+            'message' => 'Resource not found'
+        ],
+        QueryException::class => [
+            'status' => Response::HTTP_CONFLICT,
+            'error' => 'database_error',
+            'message' => 'Database operation failed'
+        ],
+        InvalidPassword::class => [
+            'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
+            'error' => 'invalid_password',
+            'message' => 'Invalid password'
+        ],
+        UsersDomainException::class => [
+            'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
+            'error' => 'domain_error',
+            'message' => 'Business rule violation'
+        ],
+        CellphoneDomainException::class => [
+            'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
+            'error' => 'domain_error', 
+            'message' => 'Business rule violation'
+        ],
+        \RuntimeException::class => [
+            'status' => Response::HTTP_BAD_REQUEST,
+            'error' => 'runtime_error',
+            'message' => 'Operation failed'
+        ]
+    ];
+
     public static function handle(\Throwable $e): JsonResponse
     {
-        $status = Response::HTTP_INTERNAL_SERVER_ERROR;
-        $payload = ['error' => 'unexpected_error', 'message' => 'Internal server error'];
-
-        $debug = config('app.debug') === true || env('APP_DEBUG') === 'true';
-
-        // 1) Not found exceptions (convención: terminar en "NotFoundException" o instanceof UserNotFound)
-        if (str_ends_with(get_class($e), 'NotFoundException')) {
-            $status = Response::HTTP_NOT_FOUND;
-            $payload['error'] = 'not_found';
-            $payload['message'] = $debug ? $e->getMessage() : 'Resource not found';
-            return response()->json($payload, $status);
-        }
-
-        // 2) Validation exceptions -> 422
-        if ($e instanceof ValidationException) {
-            $status = Response::HTTP_UNPROCESSABLE_ENTITY;
-            $payload['error'] = 'validation_error';
-            $payload['message'] = $debug ? $e->getMessage() : 'Validation failed';
-            if (method_exists($e, 'errors')) {
-                $payload['errors'] = $e->errors();
+        $debug = config('app.debug');
+        $exceptionClass = get_class($e);
+        
+        // Buscar en el mapeo de excepciones
+        foreach (self::ERROR_MAP as $exceptionType => $config) {
+            if ($e instanceof $exceptionType) {
+                return self::buildResponse($e, $config, $debug);
             }
-            return response()->json($payload, $status);
         }
 
-        // 3) Authentication -> 401
-        if ($e instanceof AuthenticationException) {
-            $status = Response::HTTP_UNAUTHORIZED;
-            $payload['error'] = 'unauthenticated';
-            $payload['message'] = $debug ? $e->getMessage() : 'Unauthenticated';
-            return response()->json($payload, $status);
+        // Para excepciones no mapeadas
+        return self::buildGenericResponse($e, $debug);
+    }
+
+    private static function buildResponse(\Throwable $e, array $config, bool $debug): JsonResponse
+    {
+        $response = [
+            'error' => $config['error'],
+            'message' => $debug ? $e->getMessage() : $config['message']
+        ];
+
+        // Agregar detalles específicos para ciertas excepciones
+        if ($e instanceof ValidationException && method_exists($e, 'errors')) {
+            $response['errors'] = $e->errors();
         }
 
-        // 4) Domain exceptions -> 4xx (mapear a 422 o 400 según convención)
-        // Usamos instanceof para detectar correctamente las excepciones del dominio
-        if ($e instanceof UsersDomainException || is_subclass_of(get_class($e), UsersDomainException::class)) {
-            $status = Response::HTTP_UNPROCESSABLE_ENTITY; // o BAD_REQUEST si preferís
-            $payload['error'] = 'domain_error';
-            $payload['message'] = $debug ? $e->getMessage() : 'Business rule violation';
-
-            // Si es NotFound específico convertido a DomainException, podrías mapearlo a 404 arriba
-            return response()->json($payload, $status);
+        if ($e instanceof QueryException && $debug) {
+            $response['sql'] = $e->getSql();
+            $response['bindings'] = $e->getBindings();
         }
 
-        // Otros: conservar mensaje en debug
         if ($debug) {
-            $payload['message'] = $e->getMessage();
-            $payload['trace'] = $e->getTrace();
+            $response['exception'] = get_class($e);
+            $response['file'] = $e->getFile();
+            $response['line'] = $e->getLine();
         }
 
-        return response()->json($payload, $status);
+        return response()->json($response, $config['status']);
+    }
+
+    private static function buildGenericResponse(\Throwable $e, bool $debug): JsonResponse
+    {
+        $response = [
+            'error' => 'internal_error',
+            'message' => $debug ? $e->getMessage() : 'Internal server error'
+        ];
+
+        if ($debug) {
+            $response['exception'] = get_class($e);
+            $response['file'] = $e->getFile();
+            $response['line'] = $e->getLine();
+            $response['trace'] = $e->getTrace();
+        }
+
+        return response()->json($response, Response::HTTP_INTERNAL_SERVER_ERROR);
+    }
+
+    // Método helper para respuestas de éxito
+    public static function successResponse(array $data = [], int $status = 200): JsonResponse
+    {
+        return response()->json($data, $status);
+    }
+
+    // Método helper para respuestas de error personalizadas
+    public static function errorResponse(string $error, string $message, int $status): JsonResponse
+    {
+        return response()->json([
+            'error' => $error,
+            'message' => $message
+        ], $status);
     }
 }
