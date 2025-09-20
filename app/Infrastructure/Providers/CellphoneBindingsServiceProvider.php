@@ -38,7 +38,7 @@ final class CellphoneBindingsServiceProvider extends ServiceProvider
         $this->app->bind(CellphoneRepositoryPort::class, EloquentCellphoneRepositoryAdapter::class);
 
         // UnitOfWork
-        
+        $this->app->singleton(UnitOfWorkPort::class, LaravelUnitOfWorkAdapter::class);
 
         // Mapper
         $this->app->singleton(CellphoneMapper::class, function () {

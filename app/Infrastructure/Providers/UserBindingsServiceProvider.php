@@ -68,7 +68,7 @@ final class UserBindingsServiceProvider extends ServiceProvider
             (int)(env('JWT_TTL', 3600))
         ));
 
-        $this->app->singleton(UnitOfWorkPort::class, LaravelUnitOfWorkAdapter::class);
+        
 
         $this->app->bind(CreateUserUseCase::class, function ($app) {
             return new CreateUserService(

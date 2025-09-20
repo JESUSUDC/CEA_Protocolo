@@ -18,11 +18,12 @@ use App\Application\Cellphone\Dto\Command\DeleteCellphoneCommand;
 use App\Application\Cellphone\Dto\Query\GetCellphoneByIdQuery;
 use App\Application\Cellphone\Dto\Query\ListCellphonesQuery;
 use App\Infrastructure\Entrypoint\Rest\Common\ErrorHandler\ApiExceptionHandler;
+use Illuminate\Support\Facades\Log;
 
 final class CellphoneController extends Controller
 {
     public function __construct(
-        //private RegisterCellphoneUseCase $registerUseCase,
+        private RegisterCellphoneUseCase $registerUseCase,
         private ListCellphonesUseCase $listUseCase,
         private GetCellphoneByIdUseCase $getByIdUseCase,
         //private UpdateCellphoneUseCase $updateUseCase,
@@ -30,7 +31,7 @@ final class CellphoneController extends Controller
         private CellphoneHttpMapper $mapper
     ) {}
 
-    /*public function store(CreateCellphoneRequest $request): JsonResponse
+    public function store(CreateCellphoneRequest $request): JsonResponse
     {
         try {
             $command = $this->mapper->toRegisterCommand($request->validated());
@@ -39,7 +40,7 @@ final class CellphoneController extends Controller
         } catch (\Throwable $e) {
             return ApiExceptionHandler::handle($e);
         }
-    }*/
+    }
 
     public function show(string $id): JsonResponse
     {
