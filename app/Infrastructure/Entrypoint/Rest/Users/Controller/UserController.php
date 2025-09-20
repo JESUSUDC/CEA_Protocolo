@@ -231,7 +231,46 @@ final class UserController extends Controller
             $command = $this->mapper->toUpdateCommand($validated, $id);
             $this->updateUserUseCase->execute($command);
             return response()->json([], 204);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // ✅ Captura errores de validación de Laravel
+            $errors = $e->errors();
+            
+            if (isset($errors['email'])) {
+                return response()->json([
+                    'error' => 'validation_error',
+                    'message' => 'El email ya está en uso'
+                ], 422);
+            }
+            
+            if (isset($errors['username'])) {
+                return response()->json([
+                    'error' => 'validation_error', 
+                    'message' => 'El nombre de usuario ya está en uso'
+                ], 422);
+            }
+            
+            return response()->json([
+                'error' => 'validation_error',
+                'message' => $errors
+            ], 422);
+            
+        } catch (\Illuminate\Database\QueryException $e) {
+            // ✅ Captura errores de base de datos
+            if (str_contains($e->getMessage(), 'UNIQUE constraint failed')) {
+                return response()->json([
+                    'error' => 'duplicate_entry',
+                    'message' => 'El usuario o email ya existe'
+                ], 409); // 409 Conflict es más apropiado
+            }
+            
+            Log::error('Database error creating user: ' . $e->getMessage());
+            return response()->json([
+                'error' => 'database_error',
+                'message' => 'Error en la base de datos'
+            ], 500);
+            
         } catch (\Throwable $e) {
+            Log::error('Error creating user: ' . $e->getMessage());
             return ApiExceptionHandler::handle($e);
         }
     }

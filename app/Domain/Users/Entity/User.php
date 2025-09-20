@@ -151,4 +151,43 @@ final class User extends AggregateRoot
     ): self {
         return new self($id, $name, $role, $email, $username, $password, $active);
     }
+
+    // dentro de la clase User (agregar después de changeEmail)
+    public function changeUsername(UserName $newUsername): void
+    {
+        if ($this->username->equals($newUsername)) {
+            return; // idempotente
+        }
+
+        $this->username = $newUsername;
+        // se podría emitir un evento UserUsernameChanged si lo deseas
+    }
+
+    /**
+     * Aplica cambios de perfil de forma cohesiva y encapsulada.
+     * Recibe un array con claves opcionales: name, username, email, role.
+     */
+    public function updateProfile(array $changes): void
+    {
+        // name
+        if (isset($changes['name']) && $changes['name'] !== null) {
+            $this->rename(UserName::fromString($changes['name']));
+        }
+
+        // username
+        if (isset($changes['username']) && $changes['username'] !== null) {
+            $this->changeUsername(UserName::fromString($changes['username']));
+        }
+
+        // email
+        if (isset($changes['email']) && $changes['email'] !== null) {
+            $this->changeEmail(Email::fromString($changes['email']));
+        }
+
+        // role
+        if (isset($changes['role']) && $changes['role'] !== null) {
+            $this->assignRole(Role::fromString($changes['role']));
+        }
+    }
+
 }
