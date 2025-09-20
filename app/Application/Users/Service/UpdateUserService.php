@@ -28,6 +28,16 @@ final class UpdateUserService implements UpdateUserUseCase
                 throw new \RuntimeException('User not found');
             }
 
+            $user2 = $this->userRepository->findByUsername($command->username);
+            if ($user2) {
+                throw new \RuntimeException('El nombre de usuario ya está en uso.');
+            }
+
+            $user2 = $this->userRepository->findByEmail($command->email);
+            if ($user2) {
+                throw new \RuntimeException('El correo ya está en uso.');
+            }
+
             if ($command->name !== null) {
                 $user->rename(UserName::fromString($command->name));
             }
@@ -41,7 +51,7 @@ final class UpdateUserService implements UpdateUserUseCase
                 $user->rename(UserName::fromString($command->username)); // considera usar VO separado para username
             }
 
-            $this->userRepository->save($user);
+            $this->userRepository->update($user);
             $this->uow->commit();
         } catch (\Throwable $e) {
             $this->uow->rollback();

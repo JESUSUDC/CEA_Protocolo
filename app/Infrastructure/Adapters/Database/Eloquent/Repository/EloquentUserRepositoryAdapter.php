@@ -28,6 +28,16 @@ final class EloquentUserRepositoryAdapter implements UserRepositoryPort
         $m->save();
     }
 
+    public function update(User $user): void
+    {
+        $existing = UserModel::find($user->id()->toString());
+        if (!$existing) {
+            throw new \RuntimeException('Cellphone not found for update.');
+        }
+        $existing->fill($this->toModel($user)->toArray());
+        $existing->save();
+    }
+
     private function toDomain(UserModel $m): User
     {
         return User::reconstitute(
@@ -40,6 +50,20 @@ final class EloquentUserRepositoryAdapter implements UserRepositoryPort
             (bool)$m->active
         );
     }
+
+    private function toModel(User $user): UserModel
+    {
+        $m = new UserModel();
+        $m->id = $user->id()->toString();
+        $m->name = $user->name()->toString();
+        $m->role = $user->role()->toString();
+        $m->email = $user->email()->toString();
+        $m->username = $user->username()->toString();
+        $m->password_hash = $user->passwordHash()->toString();  // ✅ Usa toString()
+        $m->active = $user->isActive();
+        return $m;
+    }
+    
 
     public function findById(string $id): ?User
     {

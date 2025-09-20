@@ -36,9 +36,9 @@ final class UserController extends Controller
         private RefreshTokenUseCase $refreshTokenUseCase,
         private GetUserByIdUseCase $getByIdUseCase,
         private ListUsersUseCase $listUsersUseCase,
-        //private UpdateUserUseCase $updateUserUseCase,
+        private UpdateUserUseCase $updateUserUseCase,
         private DeleteUserUseCase $deleteUserUseCase,
-        //private ChangePasswordUseCase $changePasswordUseCase,
+        private ChangePasswordUseCase $changePasswordUseCase,
         //private LogoutUseCase $logoutUseCase,
         private UserHttpMapper $mapper
     ) {}
@@ -49,17 +49,18 @@ final class UserController extends Controller
     {
         try {
             Log::info('Creating user with data: ', $request->all());
-            // Validar manualmente
+            
+            // ✅ Validación mejorada con reglas únicas
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
-                'email' => 'required|email',
-                'username' => 'required|string|max:50',
+                'email' => 'required|email|unique:users,email',
+                'username' => 'required|string|max:50|unique:users,username',
                 'password' => 'required|string|min:8',
                 'role' => 'sometimes|string|in:user,admin'
             ]);
             
             // Crear el comando manualmente
-            $id = $validated['id'] ?? \Illuminate\Support\Str::uuid()->toString();
+            $id = \Illuminate\Support\Str::uuid()->toString();
             $role = $validated['role'] ?? 'user';
             
             $command = new \App\Application\Users\Dto\Command\CreateUserCommand(
@@ -76,26 +77,51 @@ final class UserController extends Controller
             
             return response()->json(['id' => $userId], 201);
             
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // ✅ Captura errores de validación de Laravel
+            $errors = $e->errors();
+            
+            if (isset($errors['email'])) {
+                return response()->json([
+                    'error' => 'validation_error',
+                    'message' => 'El email ya está en uso'
+                ], 422);
+            }
+            
+            if (isset($errors['username'])) {
+                return response()->json([
+                    'error' => 'validation_error', 
+                    'message' => 'El nombre de usuario ya está en uso'
+                ], 422);
+            }
+            
+            return response()->json([
+                'error' => 'validation_error',
+                'message' => $errors
+            ], 422);
+            
+        } catch (\Illuminate\Database\QueryException $e) {
+            // ✅ Captura errores de base de datos
+            if (str_contains($e->getMessage(), 'UNIQUE constraint failed')) {
+                return response()->json([
+                    'error' => 'duplicate_entry',
+                    'message' => 'El usuario o email ya existe'
+                ], 409); // 409 Conflict es más apropiado
+            }
+            
+            Log::error('Database error creating user: ' . $e->getMessage());
+            return response()->json([
+                'error' => 'database_error',
+                'message' => 'Error en la base de datos'
+            ], 500);
+            
         } catch (\Throwable $e) {
             Log::error('Error creating user: ' . $e->getMessage());
             return ApiExceptionHandler::handle($e);
         }
     }
-
+        
     
-    
-    /*public function login(Request $request): JsonResponse
-    {
-        try {
-            Log::info('Creating user with data: ', $request->all());
-            $data = $request->validated();
-            $token = $this->loginUseCase->execute($data['username_or_email'], $data['password']);
-            return response()->json(['token' => $token], 200);
-        } catch (\Throwable $e) {
-            return ApiExceptionHandler::handle($e);
-        }
-    }*/
-
     public function login(Request $request): JsonResponse
     {
         try {
@@ -192,17 +218,22 @@ final class UserController extends Controller
         }
     }
 
-    /*public function update(UpdateUserHttpRequest $request, string $id): JsonResponse
+    public function update(UpdateUserHttpRequest $request, string $id): JsonResponse
     {
         try {
             $validated = $request->validated();
+            $query = new GetUserByIdQuery($id);
+            $userResp = $this->getByIdUseCase->execute($query);
+            if ($userResp === null) {
+                return response()->json(['message' => 'User not found'], 404);
+            }
             $command = $this->mapper->toUpdateCommand($validated, $id);
             $this->updateUserUseCase->execute($command);
             return response()->json([], 204);
         } catch (\Throwable $e) {
             return ApiExceptionHandler::handle($e);
         }
-    }*/
+    }
 
     public function destroy(string $id): JsonResponse
     {
@@ -219,9 +250,15 @@ final class UserController extends Controller
         }
     }
 
-    /*public function changePassword(ChangePasswordRequest $request, string $id): JsonResponse
+    public function changePassword(ChangePasswordRequest $request, string $id): JsonResponse
     {
         try {
+            $query = new GetUserByIdQuery($id);
+            $userResp = $this->getByIdUseCase->execute($query);
+            if ($userResp === null) {
+                return response()->json(['message' => 'User not found'], 404);
+            }
+            
             $payload = $request->validated();
             $command = new ChangePasswordCommand($id, $payload['currentPassword'], $payload['newPassword']);
             $this->changePasswordUseCase->execute($command);
@@ -231,7 +268,7 @@ final class UserController extends Controller
         }
     }
 
-    public function logout(string $id): JsonResponse
+    /*public function logout(string $id): JsonResponse
     {
         try {
             $this->logoutUseCase->execute($id);
