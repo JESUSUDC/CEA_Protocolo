@@ -23,6 +23,7 @@ use App\Application\Users\Dto\Query\GetUserByIdQuery;
 use App\Application\Users\Dto\Query\ListUserQuery;
 use App\Application\Users\Dto\Command\ChangePasswordCommand;
 use App\Application\Users\Port\In\RefreshTokenUseCase;
+use App\Domain\Users\Exception\InvalidPassword;
 use App\Infrastructure\Entrypoint\Rest\Common\ErrorHandler\ApiExceptionHandler;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
@@ -256,14 +257,31 @@ final class UserController extends Controller
             $query = new GetUserByIdQuery($id);
             $userResp = $this->getByIdUseCase->execute($query);
             if ($userResp === null) {
-                return response()->json(['message' => 'User not found'], 404);
+                return response()->json(['error' => 'not_found', 'message' => 'User not found'], 404);
             }
-            
+
             $payload = $request->validated();
             $command = new ChangePasswordCommand($id, $payload['currentPassword'], $payload['newPassword']);
+
+            // Log seguro: nunca incluir contraseñas, solo presencia/flags
+            Log::info('ChangePasswordCommand created', [
+                'user_id' => $command->userId,
+                'has_current_password' => !empty($payload['currentPassword']),
+                'has_new_password' => !empty($payload['newPassword']),
+            ]);
+
             $this->changePasswordUseCase->execute($command);
-            return response()->json([], 204);
+
+            // 204: No Content
+            return response()->json(null, 204);
+        } catch (InvalidPassword $e) {
+            // Error de negocio -> 422 Unprocessable Entity
+            return response()->json([
+                'error' => 'invalid_current_password',
+                'message' => $e->getMessage()
+            ], 422);
         } catch (\Throwable $e) {
+            // Delegate al handler centralizado (y evita exponer trace salvo en debug)
             return ApiExceptionHandler::handle($e);
         }
     }

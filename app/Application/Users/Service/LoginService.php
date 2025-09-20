@@ -37,6 +37,7 @@ final class LoginService implements LoginUseCase
             'sub' => $user->id()->toString(),
             'username' => $user->username()->toString(),
             'role' => $user->role()->toString(),
+            'type' => 'access'
         ];
 
         return [

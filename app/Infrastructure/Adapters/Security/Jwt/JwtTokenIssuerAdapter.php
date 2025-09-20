@@ -15,6 +15,11 @@ final class JwtTokenIssuerAdapter implements TokenIssuerPort
 
     public function issueAccessToken(array $claims): string
     {
+        // Garantizar claim type
+        if (!isset($claims['type'])) {
+            $claims['type'] = 'access';
+        }
+
         return $this->issueToken($claims, $this->accessTokenTtl);
     }
 
@@ -46,8 +51,10 @@ final class JwtTokenIssuerAdapter implements TokenIssuerPort
             if (count($parts) !== 3) return [];
 
             $payload = $parts[1];
-            $data = json_decode($this->b64urldecode($payload), true);
-            
+            $decoded = $this->b64urldecode($payload);
+            if ($decoded === false) return [];
+            $data = json_decode($decoded, true);
+
             return is_array($data) ? $data : [];
         } catch (\Throwable) {
             return [];
@@ -71,27 +78,25 @@ final class JwtTokenIssuerAdapter implements TokenIssuerPort
         try {
             $parts = explode('.', $token);
             if (count($parts) !== 3) return false;
+            [$headerB64, $payloadB64, $sig] = $parts;
 
-            [$header, $payload, $sig] = $parts;
-            $expected = $this->b64url(hash_hmac('sha256', "$header.$payload", $this->secret, true));
+            $headerJson = $this->b64urldecode($headerB64);
+            $header = json_decode($headerJson, true);
+            if (!is_array($header) || ($header['alg'] ?? '') !== 'HS256') return false;
 
+            $expected = $this->b64url(hash_hmac('sha256', "$headerB64.$payloadB64", $this->secret, true));
             if (!hash_equals($expected, $sig)) return false;
 
-            $data = json_decode($this->b64urldecode($payload), true);
-            
-            // Verificar expiración
+            $data = json_decode($this->b64urldecode($payloadB64), true);
             if (!isset($data['exp']) || time() > (int)$data['exp']) return false;
-            
-            // Verificar tipo de token si se especifica
-            if ($expectedType && (!isset($data['type']) || $data['type'] !== $expectedType)) {
-                return false;
-            }
+            if ($expectedType && (!isset($data['type']) || $data['type'] !== $expectedType)) return false;
 
             return true;
         } catch (\Throwable) {
             return false;
         }
     }
+
 
     private function b64url(string $data): string
     {

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Infrastructure\Entrypoint\Rest\Users\Controller\UserController;
 use App\Infrastructure\Entrypoint\Rest\Cellphones\Controller\CellphoneController;
 use App\Infrastructure\Entrypoint\Rest\Cellphones\Controller\CellController;
+use App\Infrastructure\Entrypoint\Rest\Middleware\JwtAuthMiddleware;
 
 /*
 | API routes for Users (hexagonal entrypoint)
@@ -20,14 +21,14 @@ Route::prefix('v1')->group(function () {
     Route::post('/users/refresh', [UserController::class, 'refresh']); // token refresh
 
     // Protected
-    //Route::middleware(['auth:api'])->group(function () {
+    Route::middleware(['jwt.auth'])->group(function () {
         Route::get('/users', [UserController::class, 'index']);
         Route::get('/users/{id}', [UserController::class, 'show']);
         Route::put('/users/{id}', [UserController::class, 'update']);
         Route::delete('/users/{id}', [UserController::class, 'destroy']);
         Route::post('/users/{id}/change-password', [UserController::class, 'changePassword']);
         Route::post('/users/{id}/logout', [UserController::class, 'logout']);
-    //});
+    });
 
     // -------------------------
     // Cellphones
@@ -36,10 +37,10 @@ Route::prefix('v1')->group(function () {
     Route::post('/cellphones', [CellphoneController::class, 'store']); // register cellphone
 
     // Protected
-    //Route::middleware(['auth:api'])->group(function () {
+    Route::middleware([JwtAuthMiddleware::class])->group(function () {
         Route::get('/cellphones', [CellphoneController::class, 'index']); // list
         Route::get('/cellphones/{id}', [CellphoneController::class, 'show']); // get by id
         Route::put('/cellphones/{id}', [CellphoneController::class, 'update']); // update
         Route::delete('/cellphones/{id}', [CellphoneController::class, 'destroy']); // delete
-    //});
+    });
 });
