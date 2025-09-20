@@ -23,33 +23,93 @@ use App\Application\Users\Dto\Query\GetUserByIdQuery;
 use App\Application\Users\Dto\Query\ListUserQuery;
 use App\Application\Users\Dto\Command\ChangePasswordCommand;
 use App\Infrastructure\Entrypoint\Rest\Common\ErrorHandler\ApiExceptionHandler;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
+
 
 final class UserController extends Controller
 {
     public function __construct(
-        private CreateUserUseCase $createUser,
-        private LoginUseCase $loginUseCase,
+        //private CreateUserUseCase $createUser,
+        //private LoginUseCase $loginUseCase,
         private GetUserByIdUseCase $getByIdUseCase,
         private ListUsersUseCase $listUsersUseCase,
-        private UpdateUserUseCase $updateUserUseCase,
-        private DeleteUserUseCase $deleteUserUseCase,
-        private ChangePasswordUseCase $changePasswordUseCase,
-        private LogoutUseCase $logoutUseCase,
+        //private UpdateUserUseCase $updateUserUseCase,
+        //private DeleteUserUseCase $deleteUserUseCase,
+        //private ChangePasswordUseCase $changePasswordUseCase,
+        //private LogoutUseCase $logoutUseCase,
         private UserHttpMapper $mapper
     ) {}
 
-    public function store(CreateUserHttpRequest $request): JsonResponse
+    
+
+    /*public function store(Request $request): JsonResponse
     {
         try {
-            $command = $this->mapper->toCreateCommand($request->validated());
-            $id = $this->createUser->execute($command);
-            return response()->json(['id' => $id], 201);
+            Log::info('Creating user with data: ', $request->all());
+            //$command = $this->mapper->toCreateCommand($request->validated());
+            //$id = $this->createUser->execute($command);
+            //return response()->json(['id' => $id], 201);
+            return response()->json(['id' => "hola"], 201);
         } catch (\Throwable $e) {
+            return ApiExceptionHandler::handle($e);
+        }
+    }*/
+    
+    public function store(Request $request): JsonResponse
+    {
+        try {
+            Log::info('Creating user with data: ', $request->all());
+            
+            // Crear manualmente todas las dependencias
+            $repo = app()->make(\App\Application\Users\Port\Out\UserRepositoryPort::class);
+            $hasher = app()->make(\App\Application\Users\Port\Out\PasswordHasherPort::class);
+            $strengthEvaluator = app()->make(\App\Application\Users\Port\Out\PasswordStrengthPolicyPort::class);
+            $uow = app()->make(\App\Application\Users\Port\Out\UnitOfWorkPort::class);
+            $mapper = app()->make(\App\Application\Users\Mapper\UserMapper::class);
+            
+            // Crear el servicio manualmente
+            $createUserService = new \App\Application\Users\Service\CreateUserService(
+                $repo,
+                $hasher,
+                $strengthEvaluator,
+                $uow
+            );
+            
+            // Validar manualmente
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email',
+                'username' => 'required|string|max:50',
+                'password' => 'required|string|min:8',
+                'role' => 'sometimes|string|in:user,admin'
+            ]);
+            
+            // Crear el comando manualmente
+            $id = $validated['id'] ?? \Illuminate\Support\Str::uuid()->toString();
+            $role = $validated['role'] ?? 'user';
+            
+            $command = new \App\Application\Users\Dto\Command\CreateUserCommand(
+                name: $validated['name'],
+                role: $role,
+                email: $validated['email'],
+                username: $validated['username'],
+                password: $validated['password'],
+                id: $id
+            );
+            
+            // Ejecutar el servicio
+            $userId = $createUserService->execute($command);
+            
+            return response()->json(['id' => $userId], 201);
+            
+        } catch (\Throwable $e) {
+            Log::error('Error creating user: ' . $e->getMessage());
             return ApiExceptionHandler::handle($e);
         }
     }
 
-    public function login(LoginUserRequest $request): JsonResponse
+    /*public function login(LoginUserRequest $request): JsonResponse
     {
         try {
             $data = $request->validated();
@@ -58,7 +118,7 @@ final class UserController extends Controller
         } catch (\Throwable $e) {
             return ApiExceptionHandler::handle($e);
         }
-    }
+    }*/
 
     public function show(string $id): JsonResponse
     {
@@ -88,7 +148,7 @@ final class UserController extends Controller
         }
     }
 
-    public function update(UpdateUserHttpRequest $request, string $id): JsonResponse
+    /*public function update(UpdateUserHttpRequest $request, string $id): JsonResponse
     {
         try {
             $validated = $request->validated();
@@ -130,5 +190,5 @@ final class UserController extends Controller
         } catch (\Throwable $e) {
             return ApiExceptionHandler::handle($e);
         }
-    }
+    }*/
 }

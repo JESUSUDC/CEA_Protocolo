@@ -10,16 +10,6 @@ use App\Infrastructure\Entrypoint\Rest\Cellphones\Controller\CellController;
 | Se recomienda proteger las rutas sensibles con middleware 'auth:api' o JWT middleware.
 */
 
-Route::get('/test', function() {
-    return response()->json(['message' => 'Ruta funciona']);
-});
-
-Route::get('/cellphones', [CellController::class, 'index']);
-
-Route::get('/test2', [\App\Http\Controllers\TestController::class, 'index']);
-
-
-
 Route::prefix('v1')->group(function () {
     // -------------------------
     // Users

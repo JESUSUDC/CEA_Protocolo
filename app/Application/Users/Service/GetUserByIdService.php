@@ -5,7 +5,7 @@ namespace App\Application\Users\Service;
 
 use App\Application\Users\Port\In\GetUserByIdUseCase;
 use App\Application\Users\Dto\Query\GetUserByIdQuery;
-use App\Application\Users\Response\UserResponse;
+use App\Application\Users\Dto\Response\UserResponse;
 use App\Application\Users\Mapper\UserMapper;
 use App\Application\Users\Port\Out\UserRepositoryPort as OutUserRepository;
 use App\Domain\Users\ValueObject\UserId;

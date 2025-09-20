@@ -23,9 +23,22 @@ final class EloquentUserRepositoryAdapter implements UserRepositoryPort
         $m->role = $user->role()->toString();
         $m->email = $user->email()->toString();
         $m->username = $user->username()->toString();
-        $m->password_hash = $user->passwordHash()->toString();
+        $m->password_hash = $user->passwordHash()->toString();  // ✅ Usa toString()
         $m->active = $user->isActive();
         $m->save();
+    }
+
+    private function toDomain(UserModel $m): User
+    {
+        return User::reconstitute(
+            UserId::fromString($m->id),
+            UserName::fromString($m->name),
+            Role::fromString($m->role),
+            Email::fromString($m->email),
+            UserName::fromString($m->username),
+            PasswordHash::fromHash($m->password_hash),  // ✅ Usa fromHash()
+            (bool)$m->active
+        );
     }
 
     public function findById(string $id): ?User
@@ -60,17 +73,4 @@ final class EloquentUserRepositoryAdapter implements UserRepositoryPort
         return $models->map(fn($m) => $this->toDomain($m))->all();
     }
 
-    private function toDomain(UserModel $m): User
-    {
-        // Preferimos reconstitute (no usar register) para preservar 'active' y hash reales.
-        return User::reconstitute(
-            UserId::fromString($m->id),
-            UserName::fromString($m->name),
-            Role::fromString($m->role),
-            Email::fromString($m->email),
-            UserName::fromString($m->username),
-            PasswordHash::fromHash($m->password_hash),
-            (bool)$m->active
-        );
-    }
 }

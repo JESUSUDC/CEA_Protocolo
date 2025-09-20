@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Application\Users\Mapper;
 
 use App\Domain\Users\Entity\User;
-use App\Application\Users\Response\UserResponse;
+use App\Application\Users\Dto\Response\UserResponse;
 
 final class UserMapper
 {

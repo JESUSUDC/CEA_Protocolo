@@ -7,7 +7,7 @@ use App\Application\Users\Dto\Command\CreateUserCommand as CommandCreateUserComm
 use Illuminate\Support\Str;
 use App\Application\Users\Dto\Command\CreateUserCommand;
 use App\Application\Users\Dto\Command\UpdateUserCommand;
-use App\Application\Users\Response\UserResponse;
+use App\Application\Users\Dto\Response\UserResponse;
 use App\Domain\Users\ValueObject\Role;
 
 final class UserHttpMapper

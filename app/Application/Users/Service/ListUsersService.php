@@ -5,7 +5,7 @@ namespace App\Application\Users\Service;
 
 use App\Application\Users\Port\In\ListUsersUseCase;
 use App\Application\Users\Dto\Query\ListUserQuery;
-use App\Application\Users\Response\UserListResponse;
+use App\Application\Users\Dto\Response\UserListResponse;
 use App\Application\Users\Mapper\UserMapper;
 use App\Application\Users\Port\Out\UserRepositoryPort as OutUserRepository;
 
