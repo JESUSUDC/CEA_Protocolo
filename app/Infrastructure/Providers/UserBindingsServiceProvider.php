@@ -57,11 +57,7 @@ final class UserBindingsServiceProvider extends ServiceProvider
          *  - TokenIssuerPort (JwtTokenIssuerAdapter)
          */
 
-        $this->app->singleton(UserModel::class, fn() => new UserModel());
-
-        $this->app->bind(UserRepositoryPort::class, function($app) {
-            return new EloquentUserRepositoryAdapter($app->make(UserModel::class));
-        });
+        $this->app->bind(UserRepositoryPort::class, EloquentUserRepositoryAdapter::class);
 
         $this->app->singleton(PasswordHasherPort::class, fn() => new PasswordHasherAdapter());
         $this->app->singleton(PasswordStrengthPolicyPort::class, fn() => new PasswordStrengthPolicyAdapter());
@@ -72,9 +68,7 @@ final class UserBindingsServiceProvider extends ServiceProvider
             (int)(env('JWT_TTL', 3600))
         ));
 
-        $this->app->singleton(UnitOfWorkPort::class, function ($app) {
-            return new LaravelUnitOfWorkAdapter();
-        });
+        $this->app->singleton(UnitOfWorkPort::class, LaravelUnitOfWorkAdapter::class);
 
         $this->app->bind(CreateUserUseCase::class, function ($app) {
             return new CreateUserService(

@@ -24,9 +24,9 @@ final class CellphoneController extends Controller
     public function __construct(
         //private RegisterCellphoneUseCase $registerUseCase,
         private ListCellphonesUseCase $listUseCase,
-        /*private GetCellphoneByIdUseCase $getByIdUseCase,
-        private UpdateCellphoneUseCase $updateUseCase,
-        private DeleteCellphoneUseCase $deleteUseCase,*/
+        private GetCellphoneByIdUseCase $getByIdUseCase,
+        //private UpdateCellphoneUseCase $updateUseCase,
+        private DeleteCellphoneUseCase $deleteUseCase,
         private CellphoneHttpMapper $mapper
     ) {}
 
@@ -39,7 +39,7 @@ final class CellphoneController extends Controller
         } catch (\Throwable $e) {
             return ApiExceptionHandler::handle($e);
         }
-    }
+    }*/
 
     public function show(string $id): JsonResponse
     {
@@ -53,7 +53,7 @@ final class CellphoneController extends Controller
         } catch (\Throwable $e) {
             return ApiExceptionHandler::handle($e);
         }
-    }*/
+    }
 
     public function index(): JsonResponse
     {
@@ -79,15 +79,20 @@ final class CellphoneController extends Controller
         } catch (\Throwable $e) {
             return ApiExceptionHandler::handle($e);
         }
-    }
+    }*/
 
     public function destroy(string $id): JsonResponse
     {
         try {
+            $query = new GetCellphoneByIdQuery($id);
+            $cellResp = $this->getByIdUseCase->execute($query);
+            if ($cellResp === null) {
+                return response()->json(['message' => 'Cellphone not found'], 404);
+            }
             $this->deleteUseCase->execute(new DeleteCellphoneCommand($id));
             return response()->json([], 204);
         } catch (\Throwable $e) {
             return ApiExceptionHandler::handle($e);
         }
-    }*/
+    }
 }

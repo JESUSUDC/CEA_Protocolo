@@ -22,6 +22,7 @@ use App\Domain\Cellphone\ValueObject\BooleanFeature;
 use App\Domain\Cellphone\ValueObject\SimCount;
 use Carbon\Carbon;
 use App\Application\Cellphone\Port\Out\CellphoneRepositoryPort;
+use App\Domain\Cellphone\Exception\CellphoneNotFoundException;
 
 final class EloquentCellphoneRepositoryAdapter implements CellphoneRepositoryPort
 {
@@ -44,7 +45,11 @@ final class EloquentCellphoneRepositoryAdapter implements CellphoneRepositoryPor
 
     public function delete(string $id): void
     {
-        CellphoneModel::destroy($id);
+        $deleted = CellphoneModel::destroy($id);
+        if ($deleted === 0) {
+            throw CellphoneNotFoundException::withId($id);
+        }
+
     }
 
     public function findById(string $id): ?CellphoneEntity
