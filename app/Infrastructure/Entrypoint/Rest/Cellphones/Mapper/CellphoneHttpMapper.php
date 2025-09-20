@@ -117,7 +117,7 @@ final class CellphoneHttpMapper
         return new UpdateCellphoneCommand(
             id: $id,
             brand: $dto['brand'] ?? null,
-            //imei: $dto['imei'] ?? null,
+            imei: $dto['imei'] ?? null,
             screenSize: isset($dto['screen_size']) ? (float)$dto['screen_size'] : null,
             megapixels: isset($dto['megapixels']) ? (float)$dto['megapixels'] : null,
             ramMb: isset($dto['ram_mb']) ? (int)$dto['ram_mb'] : null,

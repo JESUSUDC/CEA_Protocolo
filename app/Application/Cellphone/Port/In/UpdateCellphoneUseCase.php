@@ -7,5 +7,5 @@ use App\Application\Cellphone\Dto\Command\UpdateCellphoneCommand;
 
 interface UpdateCellphoneUseCase
 {
-    public function execute(UpdateCellphoneCommand $command): void;
+    public function execute(UpdateCellphoneCommand $command): void; // ✅ Solo el comando
 }

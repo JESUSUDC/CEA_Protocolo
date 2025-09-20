@@ -160,6 +160,7 @@ final class Cellphone extends AggregateRoot
     // Example behaviour: update core specifications (atomic operation)
     public function updateSpecifications(
         ?Brand $brand = null,
+        ?Imei $imei = null,
         ?ScreenSize $screenSize = null,
         ?Megapixels $megapixels = null,
         ?RAM $ram = null,
@@ -180,6 +181,11 @@ final class Cellphone extends AggregateRoot
 
         if ($brand !== null && !$this->brand->equals($brand)) {
             $this->brand = $brand;
+            $changed = true;
+        }
+
+        if ($imei !== null && !$this->imei->equals($imei)) {
+            $this->imei = $imei;
             $changed = true;
         }
 

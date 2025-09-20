@@ -8,6 +8,7 @@ final class UpdateCellphoneCommand
     public function __construct(
         public string $id,
         public ?string $brand = null,
+        public ?string $imei = null,
         public ?float $screenSize = null,
         public ?float $megapixels = null,
         public ?int $ramMb = null,

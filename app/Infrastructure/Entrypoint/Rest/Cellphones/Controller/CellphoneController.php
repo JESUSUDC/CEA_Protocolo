@@ -19,6 +19,7 @@ use App\Application\Cellphone\Dto\Query\GetCellphoneByIdQuery;
 use App\Application\Cellphone\Dto\Query\ListCellphonesQuery;
 use App\Infrastructure\Entrypoint\Rest\Common\ErrorHandler\ApiExceptionHandler;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 
 final class CellphoneController extends Controller
 {
@@ -71,16 +72,57 @@ final class CellphoneController extends Controller
         }
     }
 
-    /*public function update(UpdateCellphoneRequest $request, string $id): JsonResponse
+    public function update(Request $request, string $id): JsonResponse
     {
         try {
-            $command = $this->mapper->toUpdateCommand($request->validated(), $id);
-            $this->updateUseCase->execute($command);
+            Log::info("Updating cellphone with ID: $id");
+            Log::info('Request Data: ' . json_encode($request->all()));
+
+            $validated = $request->validate([
+                'brand' => 'sometimes|required|string',
+                'imei' => 'sometimes|required|string',
+                'screen_size' => 'sometimes|required|numeric',
+                'megapixels' => 'sometimes|required|numeric',
+                'ram_mb' => 'sometimes|required|integer',
+                'storage_primary_mb' => 'sometimes|required|integer',
+                'storage_secondary_mb' => 'sometimes|nullable|integer',
+                'operating_system' => 'sometimes|required|string',
+                'operator' => 'sometimes|nullable|string',
+                'network_technology' => 'sometimes|required|string',
+                'wifi' => 'sometimes|required|boolean',
+                'bluetooth' => 'sometimes|required|boolean',
+                'camera_count' => 'sometimes|required|integer',
+                'cpu_brand' => 'sometimes|required|string',
+                'cpu_speed_ghz' => 'sometimes|required|numeric',
+                'nfc' => 'sometimes|required|boolean',
+                'fingerprint' => 'sometimes|required|boolean',
+                'ir' => 'sometimes|required|boolean',
+                'water_resistant' => 'sometimes|required|boolean',
+                'sim_count' => 'sometimes|required|integer',
+            ]);
+
+            Log::info('Validated Data: ' . json_encode($validated));
+            $query = new GetCellphoneByIdQuery($id);
+            $cellResp = $this->getByIdUseCase->execute($query);
+            if ($cellResp === null) {
+                return response()->json(['message' => 'Cellphone not found'], 404);
+            }
+
+            $command = $this->mapper->toUpdateCommand($validated, $id);
+            //$this->updateUseCase->execute($command, $cellResp);
+
+            // Crear manualmente el servicio de actualización
+            $repo = app()->make(\App\Application\Cellphone\Port\Out\CellphoneRepositoryPort::class);
+            $uow = app()->make(\App\Application\Users\Port\Out\UnitOfWorkPort::class);
+            
+            $updateService = new \App\Application\Cellphone\Service\UpdateCellphoneService($repo, $uow);
+            $updateService->execute($command);
+
             return response()->json([], 204);
         } catch (\Throwable $e) {
             return ApiExceptionHandler::handle($e);
         }
-    }*/
+    }
 
     public function destroy(string $id): JsonResponse
     {
